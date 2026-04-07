@@ -1,0 +1,87 @@
+
+services:
+  # ===================== BDD ================
+  pfc_db:
+    container_name: PFC_db
+    image: postgres:17 # Image permettant de créer le conteneur
+    restart: unless-stopped # Redémarre automatiquement mon service en cas de crash (sauf si je l'ai éteint manuellement)
+    networks:
+      - PFC_network
+    volumes:
+      - PFC_db-volume:/var/lib/postgresql/data # je monte mon volume oquiz-data dans mon conteneur, là où Postgres écrit par défaut ses données lorsqu'il manipule les tables
+    env_file:
+      - .env 
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+    ports: # Si on a besoin de pouvoir contacter la BDD depuis l'extérieur, on peut rajouter ce binding de port, sinon pas besoin
+      # PORT_LOCAL:PORT_CONTENEUR
+      - ${POSTGRES_PORT}:5432
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+# ===================== API ================
+  pfc_api:
+    container_name: PFC_api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env 
+    environment:
+      PORT: ${API_LOCAL_PORT}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@PFC_db:5432/${POSTGRES_DB}
+      NODE_ENV: development
+    ports:
+      - ${API_LOCAL_PORT}:${API_LOCAL_PORT}
+    volumes:
+      # On crée un bind volume pour le code source, qui nous permettra de développer au sein du conteneur -> on redirige l'utilisation du dossier /app depuis le conteneur vers le dossier local /api => permet le hot reload en dev
+      - ./API:/app
+      - /app/node_modules # Exclure les node_modules local, et utiliser uniquement ceux du conteneur
+    networks:
+      - PFC_network
+    depends_on:
+      pfc_db:
+        condition: service_healthy
+    command: npm run docker:dev
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${API_LOCAL_PORT}/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+
+# ===================== CLIENT ================
+  pfc_client:
+    container_name: PFC_client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:${API_LOCAL_PORT}
+    ports:
+      - ${CLIENT_LOCAL_PORT}:5173
+    volumes:
+      # Monter le code source pour le hot reload
+      - ./client:/app
+      # Exclure node_modules pour utiliser ceux du conteneur
+      - /app/node_modules
+    networks:
+      - PFC_network
+    depends_on:
+      pfc_api:
+        condition: service_healthy
+
+ 
+networks:
+  PFC_network:
+
+volumes:
+  PFC_db-volume:
