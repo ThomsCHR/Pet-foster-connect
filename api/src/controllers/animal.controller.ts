@@ -28,11 +28,12 @@ export const getAnimalById = async (req: Request, res: Response) => {
 
 export const createAnimal = async (req: Request, res: Response) => {
   try {
-    const { name, species, gender, description, status, associationId, dateOfBirth } = req.body;
+    const { name, species, breed, gender, description, status, associationId, dateOfBirth } = req.body;
     const newAnimal = await prisma.animal.create({
       data: {
         name,
         species,
+        breed,
         gender,
         description,
         status,
@@ -49,12 +50,13 @@ export const createAnimal = async (req: Request, res: Response) => {
 export const updateAnimal = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, species, gender, description, status, associationId, dateOfBirth } = req.body;
+    const { name, species, breed, gender, description, status, associationId, dateOfBirth } = req.body;
     const updatedAnimal = await prisma.animal.update({
       where: { id: Number(id) },
       data: {
         name,
         species,
+        breed,
         gender,
         description,
         status,

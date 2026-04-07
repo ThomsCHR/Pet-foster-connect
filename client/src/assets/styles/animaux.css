@@ -1,0 +1,291 @@
+/* =============================================
+   PAGE ANIMAUX — animaux.css
+   Mobile first : styles de base = mobile
+   Desktop : ajustements dans @media (min-width: 640px)
+============================================= */
+
+
+/* ===== PAGE ===== */
+.animaux-page {
+  background: #FAFAFA;
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+
+/* ===== EN-TÊTE ===== */
+.animaux-header {
+  background: linear-gradient(135deg, #1D9E75 0%, #0a5c45 100%);
+  color: white;
+  padding: 36px 20px 28px;
+  text-align: center;
+}
+
+.animaux-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.animaux-header p {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+
+/* ===== FILTRES ===== */
+.animaux-filtres {
+  padding: 16px;
+  background: white;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Barre de recherche */
+.recherche-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.recherche-input:focus {
+  border-color: #1D9E75;
+}
+
+/* Groupe de boutons filtre */
+.filtres-groupe {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filtre-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #e5e5e5;
+  background: white;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filtre-btn:hover {
+  border-color: #1D9E75;
+  color: #1D9E75;
+}
+
+/* Filtre actif */
+.filtre-btn.actif {
+  background: #1D9E75;
+  border-color: #1D9E75;
+  color: white;
+}
+
+
+/* ===== CONTENU ===== */
+.animaux-container {
+  padding: 16px;
+}
+
+
+/* ===== AUCUN RÉSULTAT ===== */
+.aucun-resultat {
+  text-align: center;
+  padding: 60px 20px;
+  color: #aaa;
+}
+
+.aucun-resultat-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.aucun-resultat p {
+  font-size: 15px;
+}
+
+
+/* ===== GRILLE DE CARTES ===== */
+/* Mobile : 1 colonne */
+.animaux-grille {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+
+/* ===== CARTE ANIMAL ===== */
+.animal-card {
+  background: white;
+  border-radius: 14px;
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.animal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ===== PHOTO ===== */
+.animal-photo-wrapper {
+  position: relative;
+}
+
+.animal-photo {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Badge statut en haut à droite de la photo */
+.animal-statut {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.statut-dispo {
+  background: #edf9f4;
+  color: #0F6E56;
+  border: 1px solid #9FE1CB;
+}
+
+.statut-accueil {
+  background: #fff8e6;
+  color: #b07800;
+  border: 1px solid #fcd97a;
+}
+
+
+/* ===== INFOS DE LA CARTE ===== */
+.animal-infos {
+  padding: 16px;
+}
+
+.animal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.animal-nom {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.animal-espece {
+  font-size: 1.3rem;
+}
+
+.animal-race {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.animal-description {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.55;
+  margin-bottom: 14px;
+
+  /* Limite à 3 lignes avec "..." */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Bas de la carte : association + bouton */
+.animal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.animal-asso {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.animal-btn {
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1D9E75;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid #9FE1CB;
+  background: #edf9f4;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.animal-btn:hover {
+  background: #d4f2e7;
+}
+
+
+/* ===== DESKTOP (≥ 640px) ===== */
+@media (min-width: 640px) {
+
+  .animaux-header {
+    padding: 48px 40px 36px;
+  }
+
+  .animaux-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .animaux-filtres {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 16px 32px;
+  }
+
+  .recherche-input {
+    width: 260px;
+  }
+
+  .animaux-container {
+    padding: 24px 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* 2 colonnes sur tablette */
+  .animaux-grille {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* 3 colonnes sur grand écran */
+@media (min-width: 960px) {
+  .animaux-grille {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

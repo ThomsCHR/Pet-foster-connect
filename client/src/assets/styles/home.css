@@ -1,0 +1,276 @@
+/* =============================================
+   PAGE D'ACCUEIL - home.css
+   Couleurs principales :
+   - Vert foncé  : #0F6E56
+   - Vert moyen  : #1D9E75
+   - Vert clair  : #E1F5EE
+   - Gris texte  : #444
+   - Fond page   : #FAFAFA
+============================================= */
+
+/* ========== FOND GÉNÉRAL ========== */
+.home-page {
+  background-color: #FAFAFA;
+  font-family: sans-serif;
+  color: #444;
+}
+
+
+/* ========== HERO (grande section du haut) ========== */
+.hero {
+  background: linear-gradient(135deg, #0F6E56 0%, #1D9E75 100%);
+  color: white;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.hero h1 {
+  font-size: 1.7rem; /* taille mobile */
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+/* Sur écran plus grand, le titre peut être plus gros */
+@media (min-width: 640px) {
+  .hero h1 {
+    font-size: 2.4rem;
+  }
+}
+
+.hero p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 520px;
+  margin: 0 auto 32px auto;
+  line-height: 1.6;
+}
+
+/* Les deux boutons du hero */
+.hero-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap; /* sur mobile les boutons passent à la ligne */
+}
+
+.btn-white {
+  background: white;
+  color: #0F6E56;
+  padding: 12px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  transition: opacity 0.2s;
+}
+
+.btn-white:hover {
+  opacity: 0.85;
+}
+
+.btn-outline-white {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+  padding: 12px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+
+.btn-outline-white:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+
+/* ========== CHIFFRES CLÉS ========== */
+.stats {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 40px 20px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.stat-card {
+  text-align: center;
+  min-width: 140px;
+}
+
+.stat-card .stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1D9E75;
+}
+
+.stat-card .stat-label {
+  font-size: 14px;
+  color: #888;
+  margin-top: 4px;
+}
+
+
+/* ========== COMMENT ÇA MARCHE ========== */
+.how-it-works {
+  padding: 60px 20px;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.how-it-works h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.how-it-works .section-subtitle {
+  color: #888;
+  margin-bottom: 40px;
+  font-size: 15px;
+}
+
+/* Les 3 étapes côte à côte */
+.steps {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.step-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 28px 20px;
+  width: 240px;
+  text-align: center;
+}
+
+.step-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+}
+
+.step-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.step-card p {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.6;
+}
+
+
+/* ========== SECTION "POURQUOI NOUS REJOINDRE" ========== */
+.why-us {
+  background: #E1F5EE;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.why-us h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.why-us .section-subtitle {
+  color: #555;
+  margin-bottom: 36px;
+  font-size: 15px;
+}
+
+.benefits {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.benefit-item {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 220px;
+  text-align: left;
+}
+
+.benefit-item .benefit-icon {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+}
+
+.benefit-item h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 6px;
+}
+
+.benefit-item p {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.5;
+}
+
+
+/* ========== APPEL À L'ACTION FINAL ========== */
+.cta-section {
+  background: linear-gradient(135deg, #1D9E75 0%, #0a5c45 100%);
+  color: white;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.cta-section h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.cta-section p {
+  font-size: 15px;
+  opacity: 0.85;
+  margin-bottom: 28px;
+}
+
+.btn-green {
+  background: #1D9E75;
+  color: white;
+  padding: 14px 32px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  display: inline-block;
+  transition: background 0.2s;
+}
+
+.btn-green:hover {
+  background: #0F6E56;
+}
+
+
+/* ========== FOOTER ========== */
+.footer {
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 24px 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #aaa;
+}

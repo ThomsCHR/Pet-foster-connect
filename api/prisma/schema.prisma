@@ -94,6 +94,7 @@ model Animal{
   id            Int         @id @default(autoincrement())
   name          String
   species       String
+  breed         String?
   gender        String
   dateOfBirth   DateTime?
   description   String
