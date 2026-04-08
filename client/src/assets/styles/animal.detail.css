@@ -296,21 +296,13 @@
 /* ===== DESKTOP (≥ 640px) ===== */
 @media (min-width: 640px) {
 
-  .animal-gallery {
-    height: 420px;
-  }
-
   .animal-gallery-thumb {
     width: 70px;
     height: 70px;
   }
 
-  .animal-detail-body {
-    padding: 28px 32px;
-  }
-
   .animal-detail-nom {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
 
   .animal-detail-demande {
@@ -319,56 +311,54 @@
     padding: 0;
     margin-top: 0;
   }
-
-  .btn-demande-full,
-  .demande-locked-full,
-  .demande-unavailable {
-    max-width: 400px;
-  }
 }
 
 @media (min-width: 860px) {
 
-  /* Layout 2 colonnes : galerie à gauche, infos à droite */
+  /* Fond de page avec padding pour laisser respirer le cadre */
   .animal-detail-page {
-    display: grid;
-    grid-template-columns: 1fr 420px;
-    grid-template-rows: auto 1fr;
-    min-height: calc(100vh - 70px);
+    padding: 40px 32px;
+    background: #FAFAFA;
   }
 
+  /* Le cadre centré */
+  .animal-detail-card {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    grid-template-rows: 1fr auto;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+
+  /* Galerie : colonne gauche, occupe les 2 lignes */
   .animal-gallery {
     grid-column: 1;
     grid-row: 1 / 3;
     height: 100%;
-    min-height: 500px;
-    position: sticky;
-    top: 70px;
-    max-height: calc(100vh - 70px);
+    min-height: 480px;
   }
 
-  .animal-gallery-thumbs {
-    flex-direction: row;
+  .animal-gallery-main {
+    border-radius: 0;
   }
 
+  /* Infos : colonne droite, ligne 1 */
   .animal-detail-body {
     grid-column: 2;
     grid-row: 1;
-    padding: 32px 28px;
-    overflow-y: auto;
+    padding: 32px 28px 20px;
   }
 
+  /* Bouton : colonne droite, ligne 2 */
   .animal-detail-demande {
     grid-column: 2;
     grid-row: 2;
-    padding: 16px 28px 24px;
+    padding: 16px 28px 28px;
     border-top: 1px solid #f0f0f0;
-    background: white;
-  }
-
-  .btn-demande-full,
-  .demande-locked-full,
-  .demande-unavailable {
-    max-width: 100%;
   }
 }
