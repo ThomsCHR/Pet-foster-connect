@@ -1,0 +1,298 @@
+/* =============================================
+   PAGE DÉTAIL ASSOCIATION — association.detail.css
+   Mobile first
+============================================= */
+
+.detail-page {
+  background: #FAFAFA;
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+
+/* ===== EN-TÊTE ===== */
+.detail-header {
+  position: relative;
+  color: white;
+  padding: 40px 20px 32px;
+  text-align: center;
+  overflow: hidden;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 40%;
+  filter: brightness(0.45) saturate(1.1);
+  z-index: 0;
+}
+
+.detail-header > * {
+  position: relative;
+  z-index: 2;
+}
+
+.detail-header h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.detail-region-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(4px);
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+
+/* ===== SECTION INFOS ===== */
+.detail-infos {
+  background: white;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 20px 16px;
+}
+
+.detail-infos-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.detail-description {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.detail-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #666;
+  background: #f6f6f6;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+
+/* ===== SECTION ANIMAUX ===== */
+.detail-animaux {
+  padding: 24px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.detail-animaux h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 4px;
+}
+
+.detail-animaux-subtitle {
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 20px;
+}
+
+
+/* ===== GRILLE ANIMAUX ===== */
+.detail-animaux-grille {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.detail-animal-card {
+  background: white;
+  border-radius: 14px;
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.detail-animal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.detail-animal-photo-wrapper {
+  position: relative;
+}
+
+.detail-animal-photo {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.detail-animal-statut {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.statut-dispo {
+  background: #edf9f4;
+  color: #0F6E56;
+  border: 1px solid #9FE1CB;
+}
+
+.statut-accueil {
+  background: #fff8e6;
+  color: #b07800;
+  border: 1px solid #fcd97a;
+}
+
+.detail-animal-infos {
+  padding: 14px;
+}
+
+.detail-animal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.detail-animal-nom {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.detail-animal-espece {
+  font-size: 1.2rem;
+}
+
+.detail-animal-race {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.detail-animal-description {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ===== BOUTON DEMANDE ===== */
+.btn-demande {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #1D9E75;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-demande:hover {
+  background: #0F6E56;
+}
+
+/* Bloc affiché si non connecté en tant que bénévole */
+.demande-locked {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f6f6f6;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #888;
+}
+
+.demande-locked a {
+  color: #1D9E75;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.demande-locked a:hover {
+  text-decoration: underline;
+}
+
+
+/* ===== PAGE NON TROUVÉE ===== */
+.detail-not-found {
+  text-align: center;
+  padding: 80px 20px;
+  color: #aaa;
+  font-size: 15px;
+}
+
+.detail-not-found a {
+  color: #1D9E75;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+
+/* ===== DESKTOP (≥ 640px) ===== */
+@media (min-width: 640px) {
+
+  .detail-header {
+    min-height: 220px;
+    padding: 52px 40px 44px;
+  }
+
+  .detail-header h1 {
+    font-size: 2.4rem;
+  }
+
+  .detail-infos {
+    padding: 24px 32px;
+  }
+
+  .detail-animaux {
+    padding: 32px;
+  }
+
+  .detail-animaux-grille {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (min-width: 960px) {
+  .detail-animaux-grille {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

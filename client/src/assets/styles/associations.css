@@ -1,12 +1,12 @@
 /* =============================================
-   PAGE ANIMAUX — animaux.css
+   PAGE ASSOCIATIONS — associations.css
    Mobile first : styles de base = mobile
    Desktop : ajustements dans @media (min-width: 640px)
 ============================================= */
 
 
 /* ===== PAGE ===== */
-.animaux-page {
+.associations-page {
   background: #FAFAFA;
   min-height: 100vh;
   font-family: sans-serif;
@@ -14,7 +14,7 @@
 
 
 /* ===== EN-TÊTE ===== */
-.animaux-header {
+.associations-header {
   position: relative;
   color: white;
   padding: 40px 20px 32px;
@@ -28,25 +28,24 @@
 }
 
 /* Photo de fond */
-.animaux-header::before {
+.associations-header::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url("https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=1400&h=400&fit=crop");
+  background-image: url("https://images.unsplash.com/photo-1560807707-8cc77767d783?w=1400&h=400&fit=crop");
   background-size: cover;
-  background-position: center 55%;
-  filter: brightness(0.55) saturate(1.1);
+  background-position: center 40%;
+  filter: brightness(0.5) saturate(1.1);
   z-index: 0;
 }
 
-
 /* Le contenu passe devant les pseudo-éléments */
-.animaux-header > * {
+.associations-header > * {
   position: relative;
   z-index: 2;
 }
 
-.animaux-header h1 {
+.associations-header h1 {
   font-size: 1.9rem;
   font-weight: 800;
   margin-bottom: 10px;
@@ -54,7 +53,7 @@
   letter-spacing: -0.3px;
 }
 
-.animaux-header p {
+.associations-header p {
   font-size: 15px;
   opacity: 0.92;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
@@ -62,7 +61,7 @@
 
 
 /* ===== FILTRES ===== */
-.animaux-filtres {
+.associations-filtres {
   padding: 16px;
   background: white;
   border-bottom: 1px solid #f0f0f0;
@@ -121,7 +120,7 @@
 
 
 /* ===== CONTENU ===== */
-.animaux-container {
+.associations-container {
   padding: 16px;
 }
 
@@ -145,15 +144,15 @@
 
 /* ===== GRILLE DE CARTES ===== */
 /* Mobile : 1 colonne */
-.animaux-grille {
+.associations-grille {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
 }
 
 
-/* ===== CARTE ANIMAL ===== */
-.animal-card {
+/* ===== CARTE ASSOCIATION ===== */
+.asso-card {
   background: white;
   border-radius: 14px;
   border: 1px solid #f0f0f0;
@@ -162,26 +161,26 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.animal-card:hover {
+.asso-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 
 /* ===== PHOTO ===== */
-.animal-photo-wrapper {
+.asso-photo-wrapper {
   position: relative;
 }
 
-.animal-photo {
+.asso-photo {
   width: 100%;
-  height: 200px;
+  height: 180px;
   object-fit: cover;
   display: block;
 }
 
-/* Badge statut en haut à droite de la photo */
-.animal-statut {
+/* Badge département en haut à droite de la photo */
+.asso-dept {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -189,50 +188,31 @@
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 20px;
-}
-
-.statut-dispo {
-  background: #edf9f4;
-  color: #0F6E56;
-  border: 1px solid #9FE1CB;
-}
-
-.statut-accueil {
-  background: #fff8e6;
-  color: #b07800;
-  border: 1px solid #fcd97a;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  backdrop-filter: blur(4px);
 }
 
 
 /* ===== INFOS DE LA CARTE ===== */
-.animal-infos {
+.asso-infos {
   padding: 16px;
 }
 
-.animal-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.animal-nom {
-  font-size: 1.15rem;
+.asso-nom {
+  font-size: 1.1rem;
   font-weight: 700;
   color: #111;
+  margin-bottom: 6px;
 }
 
-.animal-espece {
-  font-size: 1.3rem;
-}
-
-.animal-race {
+.asso-ville {
   font-size: 13px;
   color: #999;
   margin-bottom: 10px;
 }
 
-.animal-description {
+.asso-description {
   font-size: 14px;
   color: #555;
   line-height: 1.55;
@@ -245,20 +225,41 @@
   overflow: hidden;
 }
 
-/* Bas de la carte : association + bouton */
-.animal-footer {
+/* Stats animaux */
+.asso-stats {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.asso-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #777;
+  background: #f6f6f6;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+/* Bas de la carte */
+.asso-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
 }
 
-.animal-asso {
+.asso-contact {
   font-size: 12px;
   color: #aaa;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.animal-btn {
+.asso-btn {
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;
@@ -271,7 +272,7 @@
   white-space: nowrap;
 }
 
-.animal-btn:hover {
+.asso-btn:hover {
   background: #d4f2e7;
 }
 
@@ -279,16 +280,16 @@
 /* ===== DESKTOP (≥ 640px) ===== */
 @media (min-width: 640px) {
 
-  .animaux-header {
+  .associations-header {
     padding: 52px 40px 44px;
     min-height: 200px;
   }
 
-  .animaux-header h1 {
+  .associations-header h1 {
     font-size: 2.6rem;
   }
 
-  .animaux-filtres {
+  .associations-filtres {
     flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
@@ -299,14 +300,14 @@
     width: 260px;
   }
 
-  .animaux-container {
+  .associations-container {
     padding: 24px 32px;
     max-width: 1200px;
     margin: 0 auto;
   }
 
   /* 2 colonnes sur tablette */
-  .animaux-grille {
+  .associations-grille {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
@@ -314,7 +315,7 @@
 
 /* 3 colonnes sur grand écran */
 @media (min-width: 960px) {
-  .animaux-grille {
+  .associations-grille {
     grid-template-columns: repeat(3, 1fr);
   }
 }
