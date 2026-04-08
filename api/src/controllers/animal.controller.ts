@@ -79,3 +79,15 @@ export const deleteAnimal = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Erreur serveur", error });
   }
 };
+export const getAnimalsByAssociation = async (req: Request, res: Response) => {
+  try {
+    const { associationId } = req.params;
+    const animals = await prisma.animal.findMany({
+      where: { associationId: Number(associationId) },
+      include: { images: true },
+    });
+    res.status(200).json({ message: "Get animals by association", data: animals });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error });
+  }
+};
