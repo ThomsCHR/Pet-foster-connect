@@ -1,103 +1,74 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../assets/styles/animaux.css";
 
-// =============================================
-// DONNÉES STATIQUES (à remplacer par l'API plus tard)
-// =============================================
-const ANIMAUX = [
-  {
-    id: 1,
-    nom: "Luna",
-    espece: "Chien",
-    race: "Labrador",
-    age: "2 ans",
-    sexe: "Femelle",
-    description: "Luna est une chienne douce et joueuse. Elle adore les enfants et s'entend bien avec les autres animaux.",
-    photo: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop",
-    association: "SPA de Lyon",
-    statut: "Disponible",
-  },
-  {
-    id: 2,
-    nom: "Milo",
-    espece: "Chat",
-    race: "Européen",
-    age: "4 ans",
-    sexe: "Mâle",
-    description: "Milo est un chat câlin qui cherche une famille calme. Il est parfait pour un appartement.",
-    photo: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=300&fit=crop",
-    association: "Refuge du Soleil",
-    statut: "Disponible",
-  },
-  {
-    id: 3,
-    nom: "Rocky",
-    espece: "Chien",
-    race: "Berger Allemand",
-    age: "5 ans",
-    sexe: "Mâle",
-    description: "Rocky est un chien énergique qui a besoin d'exercice. Idéal pour une famille active avec un jardin.",
-    photo: "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=400&h=300&fit=crop",
-    association: "SPA de Paris",
-    statut: "En famille d'accueil",
-  },
-  {
-    id: 4,
-    nom: "Bella",
-    espece: "Chat",
-    race: "Persan",
-    age: "3 ans",
-    sexe: "Femelle",
-    description: "Bella est une chatte indépendante et élégante. Elle préfère les foyers sans autres animaux.",
-    photo: "https://images.unsplash.com/photo-1533743983669-94fa5c4338ec?w=400&h=300&fit=crop",
-    association: "Refuge du Soleil",
-    statut: "Disponible",
-  },
-  {
-    id: 5,
-    nom: "Max",
-    espece: "Chien",
-    race: "Beagle",
-    age: "1 an",
-    sexe: "Mâle",
-    description: "Max est un jeune chien plein de vie. Il est encore en apprentissage mais très attachant.",
-    photo: "https://images.unsplash.com/photo-1505628346881-b72b27e84530?w=400&h=300&fit=crop",
-    association: "SPA de Lyon",
-    statut: "Disponible",
-  },
-  {
-    id: 6,
-    nom: "Nala",
-    espece: "Chat",
-    race: "Maine Coon",
-    age: "6 ans",
-    sexe: "Femelle",
-    description: "Nala est une grande chatte majestueuse, très affectueuse avec ses humains de confiance.",
-    photo: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=400&h=300&fit=crop",
-    association: "SPA de Bordeaux",
-    statut: "Disponible",
-  },
+type AnimalStatus = "a_placer" | "placement_en_cours" | "adopte" | "place";
+
+interface Image {
+  id: number;
+  url: string;
+  thumb: string;
+}
+
+interface Animal {
+  id: number;
+  name: string;
+  species: string;
+  breed: string | null;
+  gender: string;
+  dateOfBirth: string | null;
+  description: string;
+  status: AnimalStatus;
+  associationId: number;
+  images: Image[];
+}
+
+const FILTRES_ESPECE = ["Tous", "Chien", "Chat"];
+const FILTRES_STATUT: { label: string; value: string }[] = [
+  { label: "Tous", value: "Tous" },
+  { label: "À placer", value: "a_placer" },
+  { label: "Placement en cours", value: "placement_en_cours" },
+  { label: "Placé", value: "place" },
+  { label: "Adopté", value: "adopte" },
 ];
 
-// Les filtres disponibles
-const FILTRES_ESPECE = ["Tous", "Chien", "Chat"];
-const FILTRES_STATUT = ["Tous", "Disponible", "En famille d'accueil"];
+const STATUT_LABELS: Record<AnimalStatus, string> = {
+  a_placer: "À placer",
+  placement_en_cours: "Placement en cours",
+  place: "Placé",
+  adopte: "Adopté",
+};
 
 function AnimauxPage() {
-  // État des filtres sélectionnés
+  const [animaux, setAnimaux] = useState<Animal[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filtreEspece, setFiltreEspece] = useState("Tous");
   const [filtreStatut, setFiltreStatut] = useState("Tous");
   const [recherche, setRecherche] = useState("");
 
-  // On filtre la liste selon les critères choisis
-  const animauxFiltres = ANIMAUX.filter((animal) => {
-    const matchEspece = filtreEspece === "Tous" || animal.espece === filtreEspece;
-    const matchStatut = filtreStatut === "Tous" || animal.statut === filtreStatut;
-    const matchRecherche = animal.nom.toLowerCase().includes(recherche.toLowerCase())
-      || animal.race.toLowerCase().includes(recherche.toLowerCase());
+  useEffect(() => {
+    fetch("http://localhost:3003/api/animals")
+      .then((res) => res.json())
+      .then((json) => {
+        setAnimaux(json.data ?? []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  const animauxFiltres = animaux.filter((animal) => {
+    const matchEspece = filtreEspece === "Tous" || animal.species === filtreEspece;
+    const matchStatut = filtreStatut === "Tous" || animal.status === filtreStatut;
+    const matchRecherche =
+      animal.name.toLowerCase().includes(recherche.toLowerCase()) ||
+      animal.breed?.toLowerCase().includes(recherche.toLowerCase());
     return matchEspece && matchStatut && matchRecherche;
   });
+
+  if (loading) return <p>Chargement...</p>;
 
   return (
     <div className="animaux-page">
@@ -105,7 +76,7 @@ function AnimauxPage() {
       {/* ===== EN-TÊTE ===== */}
       <div className="animaux-header">
         <h1>Nos animaux</h1>
-        <p>{ANIMAUX.length} animaux attendent une famille d'accueil</p>
+        <p>{animaux.length} animaux attendent une famille d'accueil</p>
       </div>
 
       {/* ===== BARRE DE RECHERCHE + FILTRES ===== */}
@@ -137,11 +108,11 @@ function AnimauxPage() {
         <div className="filtres-groupe">
           {FILTRES_STATUT.map((filtre) => (
             <button
-              key={filtre}
-              className={`filtre-btn ${filtreStatut === filtre ? "actif" : ""}`}
-              onClick={() => setFiltreStatut(filtre)}
+              key={filtre.value}
+              className={`filtre-btn ${filtreStatut === filtre.value ? "actif" : ""}`}
+              onClick={() => setFiltreStatut(filtre.value)}
             >
-              {filtre}
+              {filtre.label}
             </button>
           ))}
         </div>
@@ -162,36 +133,39 @@ function AnimauxPage() {
         {/* Grille de cartes */}
         <div className="animaux-grille">
           {animauxFiltres.map((animal) => (
-            <div key={animal.id} className="animal-card">
+            <Link key={animal.id} to={`/animals/${animal.id}`} className="animal-card">
 
               {/* Photo */}
               <div className="animal-photo-wrapper">
-                <img src={animal.photo} alt={animal.nom} className="animal-photo" />
+                <img
+                  src={animal.images[0]?.url ?? "https://placehold.co/400x300?text=Pas+de+photo"}
+                  alt={animal.name}
+                  className="animal-photo"
+                />
                 {/* Badge statut */}
-                <span className={`animal-statut ${animal.statut === "Disponible" ? "statut-dispo" : "statut-accueil"}`}>
-                  {animal.statut}
+                <span className={`animal-statut ${animal.status === "a_placer" ? "statut-dispo" : "statut-accueil"}`}>
+                  {STATUT_LABELS[animal.status]}
                 </span>
               </div>
 
               {/* Infos */}
               <div className="animal-infos">
                 <div className="animal-top">
-                  <h2 className="animal-nom">{animal.nom}</h2>
-                  <span className="animal-espece">{animal.espece === "Chien" ? "🐶" : "🐱"}</span>
+                  <h2 className="animal-nom">{animal.name}</h2>
+                  <span className="animal-espece">{animal.species === "Chien" ? "🐶" : "🐱"}</span>
                 </div>
 
-                <p className="animal-race">{animal.race} · {animal.age} · {animal.sexe}</p>
+                <p className="animal-race">
+                  {animal.breed ? `${animal.breed} · ` : ""}{animal.gender}
+                </p>
                 <p className="animal-description">{animal.description}</p>
 
                 <div className="animal-footer">
-                  <span className="animal-asso">📍 {animal.association}</span>
-                  <Link to={`/animals/${animal.id}`} className="animal-btn">
-                    Voir plus →
-                  </Link>
+                  <span className="animal-asso">📍 Association #{animal.associationId}</span>
                 </div>
               </div>
 
-            </div>
+            </Link>
           ))}
         </div>
 

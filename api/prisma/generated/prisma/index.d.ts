@@ -76,7 +76,6 @@ export const AnimalStatus: {
   a_placer: 'a_placer',
   placement_en_cours: 'placement_en_cours',
   adopte: 'adopte',
-  retire: 'retire',
   place: 'place'
 };
 
@@ -4968,6 +4967,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     species: string | null
+    breed: string | null
     gender: string | null
     dateOfBirth: Date | null
     description: string | null
@@ -4982,6 +4982,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     species: string | null
+    breed: string | null
     gender: string | null
     dateOfBirth: Date | null
     description: string | null
@@ -4996,6 +4997,7 @@ export namespace Prisma {
     id: number
     name: number
     species: number
+    breed: number
     gender: number
     dateOfBirth: number
     description: number
@@ -5024,6 +5026,7 @@ export namespace Prisma {
     id?: true
     name?: true
     species?: true
+    breed?: true
     gender?: true
     dateOfBirth?: true
     description?: true
@@ -5038,6 +5041,7 @@ export namespace Prisma {
     id?: true
     name?: true
     species?: true
+    breed?: true
     gender?: true
     dateOfBirth?: true
     description?: true
@@ -5052,6 +5056,7 @@ export namespace Prisma {
     id?: true
     name?: true
     species?: true
+    breed?: true
     gender?: true
     dateOfBirth?: true
     description?: true
@@ -5153,6 +5158,7 @@ export namespace Prisma {
     id: number
     name: string
     species: string
+    breed: string | null
     gender: string
     dateOfBirth: Date | null
     description: string
@@ -5186,6 +5192,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     species?: boolean
+    breed?: boolean
     gender?: boolean
     dateOfBirth?: boolean
     description?: boolean
@@ -5205,6 +5212,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     species?: boolean
+    breed?: boolean
     gender?: boolean
     dateOfBirth?: boolean
     description?: boolean
@@ -5221,6 +5229,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     species?: boolean
+    breed?: boolean
     gender?: boolean
     dateOfBirth?: boolean
     description?: boolean
@@ -5237,6 +5246,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     species?: boolean
+    breed?: boolean
     gender?: boolean
     dateOfBirth?: boolean
     description?: boolean
@@ -5247,7 +5257,7 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type AnimalOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "species" | "gender" | "dateOfBirth" | "description" | "status" | "associationId" | "volunteerId" | "created_at" | "updated_at", ExtArgs["result"]["animal"]>
+  export type AnimalOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "species" | "breed" | "gender" | "dateOfBirth" | "description" | "status" | "associationId" | "volunteerId" | "created_at" | "updated_at", ExtArgs["result"]["animal"]>
   export type AnimalInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     association?: boolean | AssociationDefaultArgs<ExtArgs>
     volunteer?: boolean | Animal$volunteerArgs<ExtArgs>
@@ -5276,6 +5286,7 @@ export namespace Prisma {
       id: number
       name: string
       species: string
+      breed: string | null
       gender: string
       dateOfBirth: Date | null
       description: string
@@ -5714,6 +5725,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Animal", 'Int'>
     readonly name: FieldRef<"Animal", 'String'>
     readonly species: FieldRef<"Animal", 'String'>
+    readonly breed: FieldRef<"Animal", 'String'>
     readonly gender: FieldRef<"Animal", 'String'>
     readonly dateOfBirth: FieldRef<"Animal", 'DateTime'>
     readonly description: FieldRef<"Animal", 'String'>
@@ -8419,6 +8431,7 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     species: 'species',
+    breed: 'breed',
     gender: 'gender',
     dateOfBirth: 'dateOfBirth',
     description: 'description',
@@ -8791,6 +8804,7 @@ export namespace Prisma {
     id?: IntFilter<"Animal"> | number
     name?: StringFilter<"Animal"> | string
     species?: StringFilter<"Animal"> | string
+    breed?: StringNullableFilter<"Animal"> | string | null
     gender?: StringFilter<"Animal"> | string
     dateOfBirth?: DateTimeNullableFilter<"Animal"> | Date | string | null
     description?: StringFilter<"Animal"> | string
@@ -8809,6 +8823,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     species?: SortOrder
+    breed?: SortOrderInput | SortOrder
     gender?: SortOrder
     dateOfBirth?: SortOrderInput | SortOrder
     description?: SortOrder
@@ -8830,6 +8845,7 @@ export namespace Prisma {
     NOT?: AnimalWhereInput | AnimalWhereInput[]
     name?: StringFilter<"Animal"> | string
     species?: StringFilter<"Animal"> | string
+    breed?: StringNullableFilter<"Animal"> | string | null
     gender?: StringFilter<"Animal"> | string
     dateOfBirth?: DateTimeNullableFilter<"Animal"> | Date | string | null
     description?: StringFilter<"Animal"> | string
@@ -8848,6 +8864,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     species?: SortOrder
+    breed?: SortOrderInput | SortOrder
     gender?: SortOrder
     dateOfBirth?: SortOrderInput | SortOrder
     description?: SortOrder
@@ -8870,6 +8887,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Animal"> | number
     name?: StringWithAggregatesFilter<"Animal"> | string
     species?: StringWithAggregatesFilter<"Animal"> | string
+    breed?: StringNullableWithAggregatesFilter<"Animal"> | string | null
     gender?: StringWithAggregatesFilter<"Animal"> | string
     dateOfBirth?: DateTimeNullableWithAggregatesFilter<"Animal"> | Date | string | null
     description?: StringWithAggregatesFilter<"Animal"> | string
@@ -9191,6 +9209,7 @@ export namespace Prisma {
   export type AnimalCreateInput = {
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -9207,6 +9226,7 @@ export namespace Prisma {
     id?: number
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -9222,6 +9242,7 @@ export namespace Prisma {
   export type AnimalUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -9238,6 +9259,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -9254,6 +9276,7 @@ export namespace Prisma {
     id?: number
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -9267,6 +9290,7 @@ export namespace Prisma {
   export type AnimalUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -9279,6 +9303,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -9709,6 +9734,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     species?: SortOrder
+    breed?: SortOrder
     gender?: SortOrder
     dateOfBirth?: SortOrder
     description?: SortOrder
@@ -9729,6 +9755,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     species?: SortOrder
+    breed?: SortOrder
     gender?: SortOrder
     dateOfBirth?: SortOrder
     description?: SortOrder
@@ -9743,6 +9770,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     species?: SortOrder
+    breed?: SortOrder
     gender?: SortOrder
     dateOfBirth?: SortOrder
     description?: SortOrder
@@ -10674,6 +10702,7 @@ export namespace Prisma {
   export type AnimalCreateWithoutAssociationInput = {
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -10689,6 +10718,7 @@ export namespace Prisma {
     id?: number
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -10771,6 +10801,7 @@ export namespace Prisma {
     id?: IntFilter<"Animal"> | number
     name?: StringFilter<"Animal"> | string
     species?: StringFilter<"Animal"> | string
+    breed?: StringNullableFilter<"Animal"> | string | null
     gender?: StringFilter<"Animal"> | string
     dateOfBirth?: DateTimeNullableFilter<"Animal"> | Date | string | null
     description?: StringFilter<"Animal"> | string
@@ -10836,6 +10867,7 @@ export namespace Prisma {
   export type AnimalCreateWithoutVolunteerInput = {
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -10851,6 +10883,7 @@ export namespace Prisma {
     id?: number
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -11129,6 +11162,7 @@ export namespace Prisma {
   export type AnimalCreateWithoutImagesInput = {
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -11144,6 +11178,7 @@ export namespace Prisma {
     id?: number
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -11174,6 +11209,7 @@ export namespace Prisma {
   export type AnimalUpdateWithoutImagesInput = {
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -11189,6 +11225,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -11203,6 +11240,7 @@ export namespace Prisma {
   export type AnimalCreateWithoutOffersInput = {
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -11218,6 +11256,7 @@ export namespace Prisma {
     id?: number
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -11270,6 +11309,7 @@ export namespace Prisma {
   export type AnimalUpdateWithoutOffersInput = {
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -11285,6 +11325,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -11328,6 +11369,7 @@ export namespace Prisma {
     id?: number
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -11340,6 +11382,7 @@ export namespace Prisma {
   export type AnimalUpdateWithoutAssociationInput = {
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -11355,6 +11398,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -11370,6 +11414,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -11388,6 +11433,7 @@ export namespace Prisma {
     id?: number
     name: string
     species: string
+    breed?: string | null
     gender: string
     dateOfBirth?: Date | string | null
     description: string
@@ -11415,6 +11461,7 @@ export namespace Prisma {
   export type AnimalUpdateWithoutVolunteerInput = {
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -11430,6 +11477,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string
@@ -11445,6 +11493,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     species?: StringFieldUpdateOperationsInput | string
+    breed?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: StringFieldUpdateOperationsInput | string
     dateOfBirth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     description?: StringFieldUpdateOperationsInput | string

@@ -34,7 +34,6 @@ enum AnimalStatus {
   a_placer
   placement_en_cours
   adopte
-  retire
   place
 }
 
@@ -91,6 +90,7 @@ model Animal {
   id            Int          @id @default(autoincrement())
   name          String
   species       String
+  breed         String?
   gender        String
   dateOfBirth   DateTime?
   description   String

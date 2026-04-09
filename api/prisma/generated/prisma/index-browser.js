@@ -153,6 +153,7 @@ exports.Prisma.AnimalScalarFieldEnum = {
   id: 'id',
   name: 'name',
   species: 'species',
+  breed: 'breed',
   gender: 'gender',
   dateOfBirth: 'dateOfBirth',
   description: 'description',
@@ -215,7 +216,6 @@ exports.AnimalStatus = exports.$Enums.AnimalStatus = {
   a_placer: 'a_placer',
   placement_en_cours: 'placement_en_cours',
   adopte: 'adopte',
-  retire: 'retire',
   place: 'place'
 };
 

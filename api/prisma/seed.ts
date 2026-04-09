@@ -31,6 +31,7 @@ async function main() {
               {
                 name: 'Luna',
                 species: 'Chat',
+                breed: 'Européen',
                 gender: 'Femelle',
                 dateOfBirth: new Date('2021-03-15'),
                 description: 'Chatte douce et câline, très sociable avec les enfants.',
@@ -45,6 +46,7 @@ async function main() {
               {
                 name: 'Milo',
                 species: 'Chat',
+                breed: 'Maine Coon',
                 gender: 'Mâle',
                 dateOfBirth: new Date('2020-08-10'),
                 description: 'Chat joueur et indépendant, aime les espaces ouverts.',
@@ -58,6 +60,7 @@ async function main() {
               {
                 name: 'Rex',
                 species: 'Chien',
+                breed: 'Berger Allemand',
                 gender: 'Mâle',
                 dateOfBirth: new Date('2019-06-01'),
                 description: 'Chien énergique, a besoin d\'un grand espace et de beaucoup d\'exercice.',
@@ -92,6 +95,7 @@ async function main() {
               {
                 name: 'Bella',
                 species: 'Chien',
+                breed: 'Labrador',
                 gender: 'Femelle',
                 dateOfBirth: new Date('2022-01-20'),
                 description: 'Chienne adorable et affectueuse, parfaite en famille.',
@@ -106,6 +110,7 @@ async function main() {
               {
                 name: 'Noisette',
                 species: 'Lapin',
+                breed: 'Bélier',
                 gender: 'Femelle',
                 dateOfBirth: new Date('2023-04-05'),
                 description: 'Lapine très calme, idéale pour un appartement.',
@@ -119,10 +124,11 @@ async function main() {
               {
                 name: 'Gribouille',
                 species: 'Chat',
+                breed: 'Persan',
                 gender: 'Mâle',
                 dateOfBirth: new Date('2018-11-30'),
                 description: 'Vieux chat sage et tranquille, cherche foyer calme.',
-                status: 'retire',
+                status: 'place',
                 images: {
                   create: [
                     { url: 'https://placecats.com/303/200', thumb: 'https://placecats.com/103/100' },

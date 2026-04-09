@@ -15,7 +15,7 @@ export const getAnimalById = async (req: Request, res: Response) => {
     const { id } = req.params;
     const animal = await prisma.animal.findUnique({
       where: { id: Number(id) },
-      include: { images: true },
+      include: { images: true, association: { include: { user: true } } },
     });
     if (!animal) {
       return res.status(404).json({ message: "Animal not found" });

@@ -150,7 +150,7 @@ function AssociationsPage() {
         {/* Grille de cartes */}
         <div className="associations-grille">
           {associationsFiltrees.map((asso) => (
-            <div key={asso.id} className="asso-card">
+            <Link key={asso.id} to={`/associations/${asso.id}`} className="asso-card">
 
               {/* Photo */}
               <div className="asso-photo-wrapper">
@@ -173,13 +173,10 @@ function AssociationsPage() {
 
                 <div className="asso-footer">
                   <span className="asso-contact">✉️ {asso.email}</span>
-                  <Link to={`/associations/${asso.id}`} className="asso-btn">
-                    Voir plus →
-                  </Link>
                 </div>
               </div>
 
-            </div>
+            </Link>
           ))}
         </div>
 
