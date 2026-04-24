@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { apiFetch } from "../../lib/api";
+import { useAuth } from "../../contexts/AuthContext";
 import "../../assets/styles/register.css";
 
 // Valeurs de l'enum Region (Prisma)
@@ -28,8 +30,12 @@ const REGIONS = [
 type TypeCompte = "benevole" | "association";
 
 function RegisterPage() {
+  const navigate = useNavigate();
+  const { refreshUser } = useAuth();
+
   // Quel type de compte ?
   const [type, setType] = useState<TypeCompte>("benevole");
+  const [error, setError] = useState<string | null>(null);
 
   // ── Champs communs (model Users) ──
   const [email, setEmail]           = useState("");
@@ -49,11 +55,37 @@ function RegisterPage() {
   const [nomAsso, setNomAsso]       = useState("");
   const [siret, setSiret]           = useState("");
 
-  function handleSubmit(e: { preventDefault: () => void }) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // TODO : appel API
-    console.log("Inscription", { type, email, password, phone, address, region, description,
-      ...(type === "benevole" ? { firstname, lastname, capacity } : { nomAsso, siret }) });
+    setError(null);
+
+    const body = {
+      type,
+      email,
+      password,
+      confirmPassword,
+      phone,
+      address,
+      region,
+      description,
+      ...(type === "benevole" ? { firstname, lastname, capacity } : { nomAsso, siret }),
+    };
+
+    try {
+      const res = await apiFetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? "Erreur lors de l'inscription");
+        return;
+      }
+      await refreshUser();
+      navigate("/");
+    } catch {
+      setError("Erreur réseau, veuillez réessayer");
+    }
   }
 
   return (
@@ -62,6 +94,8 @@ function RegisterPage() {
 
         <h1 className="register-title">Créer un compte</h1>
         <p className="register-subtitle">Rejoignez la communauté Pet Foster Connect</p>
+
+        {error && <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
 
         {/* ===== CHOIX DU TYPE ===== */}
         <div className="register-type-choix">

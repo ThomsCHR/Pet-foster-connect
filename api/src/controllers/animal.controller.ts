@@ -3,7 +3,7 @@ import { prisma } from "../client";
 
 export const getAnimals = async (req: Request, res: Response) => {
   try {
-    const animals = await prisma.animal.findMany({ include: { images: true } });
+    const animals = await prisma.animal.findMany({ include: { images: true, association: true } });
     res.status(200).json({ message: "Get all animals", data: animals });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });

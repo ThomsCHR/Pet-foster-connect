@@ -10,6 +10,11 @@ interface Image {
   thumb: string;
 }
 
+interface Association {
+  id: number;
+  name: string;
+}
+
 interface Animal {
   id: number;
   name: string;
@@ -20,6 +25,7 @@ interface Animal {
   description: string;
   status: AnimalStatus;
   associationId: number;
+  association: Association | null;
   images: Image[];
 }
 
@@ -161,7 +167,7 @@ function AnimauxPage() {
                 <p className="animal-description">{animal.description}</p>
 
                 <div className="animal-footer">
-                  <span className="animal-asso">📍 Association #{animal.associationId}</span>
+                  <span className="animal-asso">📍 {animal.association?.name ?? `Association #${animal.associationId}`}</span>
                 </div>
               </div>
 
