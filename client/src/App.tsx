@@ -8,6 +8,7 @@ import AssociationDetailPage from './components/pages/association.page.detail'
 import AnimalDetailPage from './components/pages/animal.page'
 import RegisterPage from './components/pages/connexion.register.page'
 import LoginPage from './components/pages/connexion.login.page'
+import VolunteerPage from './components/pages/volunteer.page'
 import NavigationBar from "./components/modules/navigationbar"
 import { useAuth } from './contexts/AuthContext'
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/animals/:id" element={<AnimalDetailPage isLogged={isLogged} connectedUser={connectedUser} />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/auth" element={<LoginPage />} />
+        <Route path="/volunteer/:id" element={<VolunteerPage />} />
       </Routes>
     </>
   )

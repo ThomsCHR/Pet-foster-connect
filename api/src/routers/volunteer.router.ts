@@ -1,5 +1,10 @@
 import { Router } from "express";
+import { getVolunteerById, updateVolunteer } from "../controllers/volunteer.controller";
+import { requireAuth } from "../middlewares/auth.middleware";
 
-const associationRouter = Router();
+const volunteerRouter = Router();
 
-export default associationRouter;
+volunteerRouter.get("/:id", getVolunteerById);
+volunteerRouter.put("/:id", requireAuth, updateVolunteer);
+
+export default volunteerRouter;
