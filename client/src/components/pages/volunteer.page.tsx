@@ -98,7 +98,8 @@ type VolunteerData = {
 
 function VolunteerPage() {
   const { id } = useParams();
-  const { connectedUser, refreshUser } = useAuth();
+  const { connectedUser, refreshUser, logout } = useAuth();
+  const navigate = useNavigate();
 
   // Données chargées depuis l'API
   const [volunteer, setVolunteer]   = useState<VolunteerData | null>(null);
@@ -159,6 +160,12 @@ function VolunteerPage() {
     setRegion(volunteer.user.region || "");
     setFormError("");
     setEditing(true);
+  }
+
+  // Déconnecte l'utilisateur et redirige vers l'accueil
+  async function seDeconnecter() {
+    await logout();
+    navigate("/");
   }
 
   // Ferme le formulaire sans sauvegarder
@@ -265,11 +272,16 @@ function VolunteerPage() {
               <p className="profil-role">Bénévole · {getRegionLabel(volunteer.user.region)}</p>
             </div>
 
-            {/* Le bouton "Modifier" n'est visible que pour le propriétaire */}
+            {/* Les boutons "Modifier" et "Déconnexion" ne sont visibles que pour le propriétaire */}
             {estProprietaire() && editing === false && (
-              <button className="profil-btn-edit" onClick={ouvrirEdition}>
-                Modifier mon profil
-              </button>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button className="profil-btn-edit" onClick={ouvrirEdition}>
+                  Modifier mon profil
+                </button>
+                <button className="profil-btn-logout" onClick={seDeconnecter}>
+                  Se déconnecter
+                </button>
+              </div>
             )}
           </div>
 

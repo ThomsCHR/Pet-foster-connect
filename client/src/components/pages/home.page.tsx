@@ -1,7 +1,39 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { apiFetch } from "../../lib/api";
 import "../../assets/styles/home.css";
 
+type Stats = {
+  animauxDisponibles: number;
+  nombreBenevoles: number;
+  nombreAssociations: number;
+};
+
 function HomePage() {
+  const [stats, setStats] = useState<Stats | null>(null);
+
+  useEffect(() => {
+    async function chargerStats() {
+      try {
+        const reponse = await apiFetch("/api/stats");
+        const donnees = await reponse.json();
+        setStats(donnees);
+      } catch (erreur) {
+        console.error("Impossible de charger les stats :", erreur);
+      }
+    }
+
+    chargerStats();
+  }, []);
+
+  // Pendant le chargement on affiche "..." pour ne pas laisser de vide
+  function afficherStat(valeur: number | undefined): string {
+    if (valeur === undefined || stats === null) {
+      return "...";
+    }
+    return String(valeur);
+  }
+
   return (
     <div className="home-page">
 
@@ -22,20 +54,16 @@ function HomePage() {
       {/* ===== CHIFFRES CLÉS ===== */}
       <section className="stats">
         <div className="stat-card">
-          <div className="stat-number">240+</div>
-          <div className="stat-label">Animaux aidés</div>
+          <div className="stat-number">{afficherStat(stats?.animauxDisponibles)}</div>
+          <div className="stat-label">Animaux disponibles</div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">85</div>
+          <div className="stat-number">{afficherStat(stats?.nombreBenevoles)}</div>
           <div className="stat-label">Familles d'accueil</div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">30</div>
+          <div className="stat-number">{afficherStat(stats?.nombreAssociations)}</div>
           <div className="stat-label">Associations partenaires</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">98%</div>
-          <div className="stat-label">Animaux replacés</div>
         </div>
       </section>
 

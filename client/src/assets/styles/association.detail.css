@@ -34,6 +34,11 @@
   z-index: 0;
 }
 
+/* Bandeau sans photo — dégradé de remplacement */
+.detail-header-placeholder {
+  background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%);
+}
+
 .detail-header > * {
   position: relative;
   z-index: 2;

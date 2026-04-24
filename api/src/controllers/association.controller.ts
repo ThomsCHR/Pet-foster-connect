@@ -4,7 +4,23 @@ import { prisma } from "../client";
 
 export const getAssociations = async (req: Request, res: Response) => {
     try {
-        const associations = await prisma.association.findMany();
+        const associations = await prisma.association.findMany({
+            include: {
+                // On sélectionne les champs du user sans le password
+                user: {
+                    select: {
+                        email: true,
+                        phone: true,
+                        region: true,
+                        description: true,
+                    },
+                },
+                // _count permet de récupérer le nombre d'animaux sans les charger tous
+                _count: {
+                    select: { animals: true },
+                },
+            },
+        });
         res.json(associations);
     } catch (error) {
         console.error("Error fetching associations:", error);
@@ -16,10 +32,26 @@ export const getAssociationById = async (req: Request, res: Response) => {
     try {
         const association = await prisma.association.findUnique({
             where: { id: Number(id) },
+            include: {
+                user: {
+                    select: {
+                        email: true,
+                        phone: true,
+                        region: true,
+                        description: true,
+                    },
+                },
+                animals: {
+                    include: {
+                        images: true,
+                    },
+                },
+            },
         });
         if (association) {
             res.json(association);
-        } else {            res.status(404).json({ error: "Association not found." });
+        } else {
+            res.status(404).json({ error: "Association not found." });
         }
     } catch (error) {
         console.error(`Error fetching association with id ${id}:`, error);
