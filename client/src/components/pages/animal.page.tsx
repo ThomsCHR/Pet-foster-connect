@@ -90,7 +90,7 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
 
   // Chargement des données de l'animal
   useEffect(() => {
-    fetch(`http://localhost:3003/api/animals/${id}`)
+    apiFetch(`/api/animals/${id}`)
       .then((res) => {
         if (res.status === 404) { setNotFound(true); setLoading(false); return null; }
         return res.json();

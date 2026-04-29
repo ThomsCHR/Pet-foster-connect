@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { apiFetch } from "../../lib/api";
 import "../../assets/styles/animaux.css";
 
 type AnimalStatus = "a_placer" | "placement_en_cours" | "adopte" | "place";
@@ -53,7 +54,7 @@ function AnimauxPage() {
   const [recherche, setRecherche] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3003/api/animals")
+    apiFetch("/api/animals")
       .then((res) => res.json())
       .then((json) => {
         setAnimaux(json.data ?? []);
