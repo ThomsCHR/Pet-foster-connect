@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { apiFetch } from "../../lib/api";
 import "../../assets/styles/animal.detail.css";
 
 type AnimalStatus = "a_placer" | "placement_en_cours" | "place" | "adopte";
+type OfferStatus = "soumise" | "acceptee" | "refusee" | "annulee";
 
 const STATUS_LABELS: Record<AnimalStatus, string> = {
   a_placer: "À placer",
@@ -63,18 +65,30 @@ interface Animal {
   };
 }
 
+// Ces props sont passées depuis App.tsx
 type Props = {
   isLogged: boolean;
-  connectedUser: { volunteer?: { id: number } } | null;
+  connectedUser: { volunteer?: { id: number } | null } | null;
 };
 
 function AnimalDetailPage({ isLogged, connectedUser }: Props) {
   const { id } = useParams();
-  const [animal, setAnimal] = useState<Animal | null>(null);
+
+  // Données de l'animal
+  const [animal, setAnimal]   = useState<Animal | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
 
+  // État de la demande d'accueil du bénévole pour cet animal
+  const [offerStatus, setOfferStatus]   = useState<OfferStatus | null>(null);
+  const [offerLoading, setOfferLoading] = useState(false);
+  const [offerEnvoi, setOfferEnvoi]     = useState(false);
+
+  const isVolunteer  = isLogged && connectedUser?.volunteer != null;
+  const volunteerId  = connectedUser?.volunteer?.id;
+
+  // Chargement des données de l'animal
   useEffect(() => {
     fetch(`http://localhost:3003/api/animals/${id}`)
       .then((res) => {
@@ -92,6 +106,160 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
       });
   }, [id]);
 
+  // Si l'utilisateur est bénévole, on vérifie s'il a déjà une demande pour cet animal
+  useEffect(() => {
+    if (!isVolunteer || !volunteerId) return;
+
+    setOfferLoading(true);
+
+    apiFetch(`/api/offers/volunteer/${volunteerId}`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (!json.data) return;
+
+        // Chercher une offre existante pour cet animal
+        const offreExistante = json.data.find(
+          (o: { animalId: number; status: OfferStatus }) => o.animalId === Number(id)
+        );
+
+        if (offreExistante) {
+          setOfferStatus(offreExistante.status);
+        }
+      })
+      .catch((err) => console.error("Erreur lors de la vérification de la demande :", err))
+      .finally(() => setOfferLoading(false));
+  }, [isVolunteer, volunteerId, id]);
+
+  // Soumet une demande d'accueil pour cet animal
+  async function faireDemandeAccueil() {
+    if (!isVolunteer) return;
+    setOfferEnvoi(true);
+
+    try {
+      const reponse = await apiFetch("/api/offers", {
+        method: "POST",
+        body: JSON.stringify({ animalId: Number(id) }),
+      });
+
+      if (reponse.ok || reponse.status === 200) {
+        setOfferStatus("soumise");
+      } else {
+        const json = await reponse.json();
+        console.error("Erreur lors de la demande :", json.error);
+      }
+    } catch (err) {
+      console.error("Erreur réseau :", err);
+    }
+
+    setOfferEnvoi(false);
+  }
+
+  // Annule la demande d'accueil en cours
+  async function annulerDemande() {
+    if (!volunteerId) return;
+    setOfferEnvoi(true);
+
+    try {
+      const reponse = await apiFetch(`/api/offers/${volunteerId}/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: "annulee" }),
+      });
+
+      if (reponse.ok) {
+        setOfferStatus("annulee");
+      }
+    } catch (err) {
+      console.error("Erreur réseau :", err);
+    }
+
+    setOfferEnvoi(false);
+  }
+
+  // Rendu du bloc "demande" selon l'état de l'offre et de l'animal
+  function renderBoutonDemande() {
+    const peutFaireDemande = animal?.status === "a_placer";
+
+    if (!peutFaireDemande) {
+      return (
+        <div className="demande-unavailable">
+          Cet animal n'est plus disponible pour une demande d'accueil.
+        </div>
+      );
+    }
+
+    if (!isVolunteer) {
+      return (
+        <div className="demande-locked-full">
+          🔒 <span>
+            <Link to="/auth">Connectez-vous</Link> en tant que bénévole pour faire une demande
+          </span>
+        </div>
+      );
+    }
+
+    if (offerLoading) {
+      return <div className="demande-unavailable">Chargement...</div>;
+    }
+
+    // Demande en cours d'examen
+    if (offerStatus === "soumise") {
+      return (
+        <div className="demande-soumise">
+          <span className="demande-soumise-texte">⏳ Demande envoyée — en attente de réponse de l'association</span>
+          <button
+            className="btn-demande-annuler"
+            onClick={annulerDemande}
+            disabled={offerEnvoi}
+          >
+            {offerEnvoi ? "Annulation..." : "Annuler ma demande"}
+          </button>
+        </div>
+      );
+    }
+
+    // Demande acceptée
+    if (offerStatus === "acceptee") {
+      return (
+        <div className="demande-acceptee">
+          ✅ Votre demande a été acceptée ! L'association va vous contacter.
+        </div>
+      );
+    }
+
+    // Demande refusée
+    if (offerStatus === "refusee") {
+      return (
+        <div className="demande-refusee">
+          ❌ Votre demande a été refusée par l'association.
+        </div>
+      );
+    }
+
+    // Demande précédemment annulée → on peut en soumettre une nouvelle
+    if (offerStatus === "annulee") {
+      return (
+        <button
+          className="btn-demande-full"
+          onClick={faireDemandeAccueil}
+          disabled={offerEnvoi}
+        >
+          {offerEnvoi ? "Envoi..." : "Faire une nouvelle demande d'accueil"}
+        </button>
+      );
+    }
+
+    // Aucune demande existante
+    return (
+      <button
+        className="btn-demande-full"
+        onClick={faireDemandeAccueil}
+        disabled={offerEnvoi}
+      >
+        {offerEnvoi ? "Envoi en cours..." : "Faire une demande d'accueil"}
+      </button>
+    );
+  }
+
   if (loading) return <p>Chargement...</p>;
 
   if (notFound || !animal) {
@@ -103,8 +271,6 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
     );
   }
 
-  const isVolunteer = isLogged && connectedUser?.volunteer != null;
-  const peutFaireDemande = animal.status === "a_placer";
   const age = animal.dateOfBirth ? calculerAge(animal.dateOfBirth) : null;
 
   return (
@@ -180,21 +346,7 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
 
       {/* ===== BOUTON DEMANDE ===== */}
       <div className="animal-detail-demande">
-        {!peutFaireDemande ? (
-          <div className="demande-unavailable">
-            Cet animal n'est plus disponible pour une demande d'accueil.
-          </div>
-        ) : isVolunteer ? (
-          <button className="btn-demande-full">
-            Faire une demande d'accueil
-          </button>
-        ) : (
-          <div className="demande-locked-full">
-            🔒 <span>
-              <Link to="/auth">Connectez-vous</Link> en tant que bénévole pour faire une demande
-            </span>
-          </div>
-        )}
+        {renderBoutonDemande()}
       </div>
 
     </div>

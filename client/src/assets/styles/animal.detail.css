@@ -240,6 +240,11 @@
   background: #0F6E56;
 }
 
+.btn-demande-full:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .demande-locked-full {
   display: flex;
   align-items: center;
@@ -274,6 +279,75 @@
   padding: 14px;
   font-size: 14px;
   color: #aaa;
+  text-align: center;
+}
+
+/* Demande en attente */
+.demande-soumise {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.demande-soumise-texte {
+  font-size: 14px;
+  color: #92400e;
+  font-weight: 500;
+}
+
+.btn-demande-annuler {
+  background: transparent;
+  border: 1.5px solid #f59e0b;
+  color: #92400e;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  align-self: flex-start;
+}
+
+.btn-demande-annuler:hover {
+  background: #fef3c7;
+}
+
+.btn-demande-annuler:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Demande acceptée */
+.demande-acceptee {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  color: #166534;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Demande refusée */
+.demande-refusee {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  color: #991b1b;
+  font-weight: 500;
   text-align: center;
 }
 
