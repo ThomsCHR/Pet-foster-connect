@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../../assets/styles/navbar.css";
-import { ConnectedUser } from "../../contexts/AuthContext";
+import type { ConnectedUser } from "../../contexts/AuthContext";
 
 type Props = {
   isLogged: boolean;
