@@ -1,0 +1,38 @@
+# Dockerfile de PRODUCTION — build multi-étape
+# Étape 1 : on compile le TypeScript en JavaScript
+# Étape 2 : on crée une image légère avec uniquement le JS compilé
+
+# ── Étape 1 : compilation ──────────────────────────────────────────────────
+FROM node:22-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+# Génère le client Prisma puis compile TypeScript → dist/
+RUN npx prisma generate
+RUN npm run build
+
+# ── Étape 2 : image de production ─────────────────────────────────────────
+FROM node:22-alpine AS runner
+
+WORKDIR /app
+
+# On ne copie que les dépendances de production
+COPY package*.json ./
+RUN npm install --omit=dev
+
+# On copie le code compilé et Prisma depuis l'étape builder
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
+
+# Régénère le client Prisma dans l'image finale
+RUN npx prisma generate
+
+EXPOSE 3003
+
+# En prod : on applique les migrations puis on démarre avec node (pas tsx)
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/index.js"]
