@@ -59,15 +59,22 @@ export const getAssociationById = async (req: Request, res: Response) => {
     }
 };
 export const createAssociation = async (req: Request, res: Response) => {
-    const { name, description, email, phone, address } = req.body;
+    const { name, siret, email, phone, address, description, region } = req.body;
     try {
         const newAssociation = await prisma.association.create({
             data: {
                 name,
-                description,
-                email,
-                phone,
-                address,
+                siret,
+                user: {
+                    create: {
+                        email,
+                        phone,
+                        address,
+                        description: description || undefined,
+                        region: region || undefined,
+                        password: "",
+                    },
+                },
             },
         });
         res.status(201).json(newAssociation);
@@ -78,16 +85,32 @@ export const createAssociation = async (req: Request, res: Response) => {
 };
 export const updateAssociation = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { name, description, email, phone, address } = req.body;
+    const { name, email, phone, address, description, region } = req.body;
     try {
-        const updatedAssociation = await prisma.association.update({    
+        const updatedAssociation = await prisma.association.update({
             where: { id: Number(id) },
             data: {
                 name,
-                description,    
-                email,
-                phone,
-                address,
+                user: {
+                    update: {
+                        email,
+                        phone,
+                        address,
+                        description: description || undefined,
+                        region: region || undefined,
+                    },
+                },
+            },
+            include: {
+                user: {
+                    select: {
+                        email: true,
+                        phone: true,
+                        address: true,
+                        region: true,
+                        description: true,
+                    },
+                },
             },
         });
         res.json(updatedAssociation);
