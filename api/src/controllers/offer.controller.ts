@@ -200,13 +200,29 @@ export const updateOfferStatus = async (req: Request, res: Response) => {
       return res.status(200).json({ message: "Demande acceptée, animal en cours de placement" });
     }
 
-    // Pour "refusee" ou "annulee" : simple mise à jour du statut
+    if (status === "refusee") {
+      // Refuser la demande et remettre l'animal en "à placer"
+      await prisma.$transaction([
+        prisma.offer.update({
+          where: { volunteerId_animalId: { volunteerId: Number(volunteerId), animalId: Number(animalId) } },
+          data: { status: "refusee" },
+        }),
+        prisma.animal.update({
+          where: { id: Number(animalId) },
+          data: { status: "a_placer", volunteerId: null },
+        }),
+      ]);
+
+      return res.status(200).json({ message: "Demande refusée, animal remis en disponible" });
+    }
+
+    // Pour "annulee" : simple mise à jour du statut de l'offre
     const updated = await prisma.offer.update({
       where: { volunteerId_animalId: { volunteerId: Number(volunteerId), animalId: Number(animalId) } },
       data: { status },
     });
 
-    res.status(200).json({ message: "Statut mis à jour", data: updated });
+    res.status(200).json({ message: "Demande annulée", data: updated });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
   }
