@@ -1,0 +1,386 @@
+/* =============================================
+   PAGE D'ACCUEIL - home.css
+   Mobile first : styles de base = mobile
+   Desktop : ajustements dans @media (min-width: 640px)
+   Couleurs principales :
+   - Vert foncé  : #0F6E56
+   - Vert moyen  : #1D9E75
+   - Vert clair  : #E1F5EE
+   - Gris texte  : #444
+   - Fond page   : #FAFAFA
+============================================= */
+
+/* ========== FOND GÉNÉRAL ========== */
+.home-page {
+  background-color: #FAFAFA;
+  font-family: sans-serif;
+  color: #444;
+}
+
+
+/* ========== HERO ========== */
+.hero {
+  position: relative;
+  color: white;
+  text-align: center;
+  padding: 60px 20px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0F6E56 0%, #1D9E75 100%);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?w=1400&h=700&fit=crop");
+  background-size: cover;
+  background-position: center 40%;
+  filter: brightness(0.45) saturate(1.15);
+  z-index: 0;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.3;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+}
+
+.hero p {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin: 0 auto 28px auto;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-white {
+  background: white;
+  color: #0F6E56;
+  padding: 12px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  width: 100%;
+  max-width: 280px;
+  text-align: center;
+  transition: opacity 0.2s;
+}
+
+.btn-white:hover {
+  opacity: 0.85;
+}
+
+.btn-outline-white {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+  padding: 12px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  width: 100%;
+  max-width: 280px;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.btn-outline-white:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+
+/* ========== CHIFFRES CLÉS ========== */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 32px 20px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 8px 0;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1D9E75;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #888;
+  margin-top: 4px;
+}
+
+
+/* ========== COMMENT ÇA MARCHE ========== */
+.how-it-works {
+  padding: 48px 20px;
+  text-align: center;
+}
+
+.how-it-works h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.section-subtitle {
+  color: #888;
+  margin-bottom: 32px;
+  font-size: 14px;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.step-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+.step-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.step-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.step-card p {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.6;
+}
+
+
+/* ========== POURQUOI NOUS REJOINDRE ========== */
+.why-us {
+  background: #E1F5EE;
+  padding: 48px 20px;
+  text-align: center;
+}
+
+.why-us h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.benefit-item {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: left;
+}
+
+.benefit-icon {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+}
+
+.benefit-item h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 6px;
+}
+
+.benefit-item p {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.5;
+}
+
+
+/* ========== APPEL À L'ACTION ========== */
+.cta-section {
+  background: linear-gradient(135deg, #1D9E75 0%, #0a5c45 100%);
+  color: white;
+  text-align: center;
+  padding: 48px 20px;
+}
+
+.cta-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.cta-section p {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.btn-green {
+  background: white;
+  color: #0F6E56;
+  padding: 12px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  display: inline-block;
+  transition: opacity 0.2s;
+}
+
+.btn-green:hover {
+  opacity: 0.88;
+}
+
+
+/* ========== FOOTER ========== */
+.footer {
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #aaa;
+}
+
+
+/* ===== DESKTOP (≥ 640px) ===== */
+@media (min-width: 640px) {
+
+  /* Hero */
+  .hero {
+    padding: 100px 40px;
+  }
+
+  .hero h1 {
+    font-size: 2.6rem;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    max-width: 520px;
+  }
+
+  .hero-buttons {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .btn-white,
+  .btn-outline-white {
+    width: auto;
+  }
+
+  /* Stats : 3 colonnes centrées */
+  .stats {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 40px;
+    gap: 24px;
+  }
+
+  .stat-number {
+    font-size: 2.2rem;
+  }
+
+  /* Comment ça marche */
+  .how-it-works {
+    padding: 72px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .how-it-works h2 {
+    font-size: 2rem;
+  }
+
+  .section-subtitle {
+    font-size: 15px;
+    margin-bottom: 40px;
+  }
+
+  .steps {
+    flex-direction: row;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .step-card {
+    flex: 1;
+    max-width: 260px;
+  }
+
+  /* Pourquoi nous rejoindre */
+  .why-us {
+    padding: 72px 40px;
+  }
+
+  .why-us h2 {
+    font-size: 2rem;
+  }
+
+  .benefits {
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+    max-width: 860px;
+    margin: 32px auto 0;
+  }
+
+  .benefit-item {
+    flex: 1;
+    max-width: 260px;
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 80px 40px;
+  }
+
+  .cta-section h2 {
+    font-size: 2rem;
+  }
+
+  .cta-section p {
+    font-size: 16px;
+    margin-bottom: 32px;
+  }
+}

@@ -1,0 +1,513 @@
+/* ===== PAGE PROFIL BÉNÉVOLE ===== */
+
+.profil-page {
+  min-height: 100vh;
+  background: #f7f8fc;
+  padding: 40px 20px 80px;
+}
+
+.profil-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ===== CARTE PROFIL ===== */
+
+.profil-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  overflow: hidden;
+}
+
+.profil-card-header {
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  padding: 24px 20px 20px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.profil-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  border: 3px solid rgba(255,255,255,0.5);
+}
+
+.profil-card-header-info {
+  flex: 1;
+}
+
+.profil-nom {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+}
+
+.profil-role {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  margin: 0;
+}
+
+.profil-btn-edit {
+  background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.5);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.profil-btn-edit:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+.profil-btn-logout {
+  background: rgba(239,68,68,0.2);
+  border: 1.5px solid rgba(255,255,255,0.4);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.profil-btn-logout:hover {
+  background: rgba(239,68,68,0.45);
+}
+
+/* ===== INFOS (mode view) ===== */
+
+.profil-card-body {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.profil-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profil-info-group.full {
+  grid-column: 1;
+}
+
+.profil-info-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.profil-info-value {
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.profil-info-value.empty {
+  color: #d1d5db;
+  font-style: italic;
+}
+
+/* ===== FORMULAIRE ÉDITION ===== */
+
+.profil-form {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.profil-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profil-form-group.full {
+  grid-column: 1;
+}
+
+.profil-form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.profil-form-input,
+.profil-form-textarea,
+.profil-form-select {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 14px;
+  color: #1f2937;
+  background: #f9fafb;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.profil-form-input:focus,
+.profil-form-textarea:focus,
+.profil-form-select:focus {
+  outline: none;
+  border-color: #6366f1;
+  background: #fff;
+}
+
+.profil-form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.profil-form-select {
+  cursor: pointer;
+}
+
+.profil-form-actions {
+  grid-column: 1;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.profil-btn-save {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profil-btn-save:hover {
+  background: #4f46e5;
+}
+
+.profil-btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.profil-btn-cancel {
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profil-btn-cancel:hover {
+  background: #e5e7eb;
+}
+
+.profil-form-error {
+  grid-column: 1 / -1;
+  color: #ef4444;
+  font-size: 14px;
+  background: #fef2f2;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+/* ===== SECTION ANIMAUX ===== */
+
+.profil-animaux {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 20px;
+}
+
+.profil-animaux h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 6px;
+}
+
+.profil-animaux-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 24px;
+}
+
+.profil-animaux-empty {
+  text-align: center;
+  padding: 40px 0;
+  color: #9ca3af;
+  font-size: 15px;
+}
+
+.profil-animaux-empty span {
+  display: block;
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.profil-animaux-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.profil-animal-card {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1.5px solid #f3f4f6;
+  text-decoration: none;
+  transition: box-shadow 0.2s, transform 0.2s;
+  display: block;
+  background: #fff;
+}
+
+.profil-animal-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+}
+
+.profil-animal-photo-wrapper {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+
+.profil-animal-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profil-animal-statut {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.statut-a-placer    { background: #dcfce7; color: #166534; }
+.statut-placement   { background: #fef9c3; color: #854d0e; }
+.statut-place       { background: #dbeafe; color: #1e40af; }
+.statut-adopte      { background: #f3e8ff; color: #6b21a8; }
+
+.profil-animal-infos {
+  padding: 12px 14px 14px;
+}
+
+.profil-animal-nom {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 4px;
+}
+
+.profil-animal-meta {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ===== SECTION DEMANDES D'ACCUEIL ===== */
+
+.profil-demandes {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 20px;
+}
+
+.profil-demandes-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.profil-demandes-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.profil-demandes-badge {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid #fde68a;
+}
+
+/* ── Liste des offres ── */
+
+.profil-offres-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.profil-offre-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #f9fafb;
+  border: 1.5px solid #f3f4f6;
+  border-radius: 14px;
+  padding: 12px 14px;
+  transition: box-shadow 0.15s;
+}
+
+.profil-offre-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+}
+
+.profil-offre-photo-link {
+  flex-shrink: 0;
+}
+
+.profil-offre-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.profil-offre-infos {
+  flex: 1;
+  min-width: 0;
+}
+
+.profil-offre-nom {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.profil-offre-nom:hover {
+  color: #6366f1;
+}
+
+.profil-offre-meta {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.profil-offre-droite {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.profil-offre-statut {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.profil-offre-btn-annuler {
+  background: transparent;
+  border: 1.5px solid #f59e0b;
+  color: #92400e;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.profil-offre-btn-annuler:hover {
+  background: #fef3c7;
+}
+
+.profil-offre-btn-annuler:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Badges statut offre (partagés avec association.detail.css) ── */
+
+.offre-statut-soumise  { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.offre-statut-acceptee { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
+.offre-statut-refusee  { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+.offre-statut-annulee  { background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; }
+
+/* ===== DESKTOP (≥ 640px) ===== */
+
+@media (min-width: 640px) {
+  .profil-card-header {
+    flex-wrap: nowrap;
+    gap: 24px;
+    padding: 36px 32px 24px;
+  }
+
+  .profil-card-body {
+    grid-template-columns: 1fr 1fr;
+    padding: 28px 32px;
+    gap: 20px 32px;
+  }
+
+  .profil-form {
+    grid-template-columns: 1fr 1fr;
+    padding: 28px 32px;
+    gap: 16px 24px;
+  }
+
+  .profil-info-group.full,
+  .profil-form-group.full,
+  .profil-form-actions {
+    grid-column: 1 / -1;
+  }
+
+  .profil-animaux,
+  .profil-demandes {
+    padding: 28px 32px;
+  }
+}

@@ -1,0 +1,130 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../prisma/generated/prisma"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Region {
+  Auvergne_Rhone_Alpes
+  Bourgogne_Franche_Comte
+  Bretagne
+  Centre_Val_de_Loire
+  Corse
+  Grand_Est
+  Hauts_de_France
+  Ile_de_France
+  Normandie
+  Nouvelle_Aquitaine
+  Occitanie
+  Pays_de_la_Loire
+  Provence_Alpes_Cote_Azur
+  Guadeloupe
+  Martinique
+  Guyane
+  La_Reunion
+  Mayotte
+}
+
+enum AnimalStatus {
+  a_placer
+  placement_en_cours
+  adopte
+  place
+}
+
+enum OfferStatus {
+  soumise
+  annulee
+  acceptee
+  refusee
+}
+
+model Users {
+  id Int @id @default(autoincrement())
+
+  email       String       @unique()
+  password    String
+  phone       String
+  address     String
+  volunteer   Volunteer?
+  association Association?
+  image       String?
+  region      Region?
+  description String?
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+
+  @@map("users")
+}
+
+model Association {
+  id      Int      @id @default(autoincrement())
+  name    String
+  siret   String   @unique
+  userId  Int      @unique
+  user    Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  animals Animal[]
+
+  @@map("association")
+}
+
+model Volunteer {
+  id        Int      @id @default(autoincrement())
+  lastname  String
+  firstname String
+  capacity  String
+  userId    Int      @unique
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  offers    Offer[]
+  animal    Animal[]
+
+  @@map("volunteer")
+}
+
+model Animal {
+  id            Int          @id @default(autoincrement())
+  name          String
+  species       String
+  breed         String?
+  gender        String
+  dateOfBirth   DateTime?
+  description   String
+  status        AnimalStatus
+  associationId Int
+  volunteerId   Int?
+  association   Association  @relation(fields: [associationId], references: [id], onDelete: Cascade)
+  volunteer     Volunteer?   @relation(fields: [volunteerId], references: [id], onDelete: SetNull)
+  images        Image[]
+  offers        Offer[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("animal")
+}
+
+model Image {
+  id       Int    @id @default(autoincrement())
+  url      String
+  thumb    String
+  animalID Int
+  animal   Animal @relation(fields: [animalID], references: [id], onDelete: Cascade)
+
+  @@map("image")
+}
+
+model Offer {
+  status      OfferStatus
+  animalId    Int
+  volunteerId Int
+  animal      Animal      @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  volunteer   Volunteer   @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+
+  @@id([volunteerId, animalId])
+  @@map("offer")
+}

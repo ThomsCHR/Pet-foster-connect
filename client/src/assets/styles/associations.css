@@ -1,0 +1,336 @@
+/* =============================================
+   PAGE ASSOCIATIONS — associations.css
+   Mobile first : styles de base = mobile
+   Desktop : ajustements dans @media (min-width: 640px)
+============================================= */
+
+
+/* ===== PAGE ===== */
+.associations-page {
+  background: #FAFAFA;
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+
+/* ===== EN-TÊTE ===== */
+.associations-header {
+  position: relative;
+  color: white;
+  padding: 40px 20px 32px;
+  text-align: center;
+  overflow: hidden;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Photo de fond */
+.associations-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://images.unsplash.com/photo-1560807707-8cc77767d783?w=1400&h=400&fit=crop");
+  background-size: cover;
+  background-position: center 40%;
+  filter: brightness(0.5) saturate(1.1);
+  z-index: 0;
+}
+
+/* Le contenu passe devant les pseudo-éléments */
+.associations-header > * {
+  position: relative;
+  z-index: 2;
+}
+
+.associations-header h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  letter-spacing: -0.3px;
+}
+
+.associations-header p {
+  font-size: 15px;
+  opacity: 0.92;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}
+
+
+/* ===== FILTRES ===== */
+.associations-filtres {
+  padding: 16px;
+  background: white;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Barre de recherche */
+.recherche-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.recherche-input:focus {
+  border-color: #1D9E75;
+}
+
+/* Groupe de boutons filtre */
+.filtres-groupe {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filtre-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #e5e5e5;
+  background: white;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filtre-btn:hover {
+  border-color: #1D9E75;
+  color: #1D9E75;
+}
+
+/* Filtre actif */
+.filtre-btn.actif {
+  background: #1D9E75;
+  border-color: #1D9E75;
+  color: white;
+}
+
+
+/* ===== CONTENU ===== */
+.associations-container {
+  padding: 16px;
+}
+
+
+/* ===== AUCUN RÉSULTAT ===== */
+.aucun-resultat {
+  text-align: center;
+  padding: 60px 20px;
+  color: #aaa;
+}
+
+.aucun-resultat-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.aucun-resultat p {
+  font-size: 15px;
+}
+
+
+/* ===== GRILLE DE CARTES ===== */
+/* Mobile : 1 colonne */
+.associations-grille {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+
+/* ===== CARTE ASSOCIATION ===== */
+.asso-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  background: white;
+  border-radius: 14px;
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.asso-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ===== PHOTO ===== */
+.asso-photo-wrapper {
+  position: relative;
+}
+
+.asso-photo {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Bandeau de remplacement quand il n'y a pas de photo */
+.asso-photo-placeholder {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+
+/* Badge département en haut à droite de la photo */
+.asso-dept {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  backdrop-filter: blur(4px);
+}
+
+
+/* ===== INFOS DE LA CARTE ===== */
+.asso-infos {
+  padding: 16px;
+}
+
+.asso-nom {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 6px;
+}
+
+.asso-ville {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.asso-description {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.55;
+  margin-bottom: 14px;
+
+  /* Limite à 3 lignes avec "..." */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Stats animaux */
+.asso-stats {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.asso-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #777;
+  background: #f6f6f6;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+/* Bas de la carte */
+.asso-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.asso-contact {
+  font-size: 12px;
+  color: #aaa;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asso-btn {
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1D9E75;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid #9FE1CB;
+  background: #edf9f4;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.asso-btn:hover {
+  background: #d4f2e7;
+}
+
+
+/* ===== DESKTOP (≥ 640px) ===== */
+@media (min-width: 640px) {
+
+  .associations-header {
+    padding: 52px 40px 44px;
+    min-height: 200px;
+  }
+
+  .associations-header h1 {
+    font-size: 2.6rem;
+  }
+
+  .associations-filtres {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 16px 32px;
+  }
+
+  .recherche-input {
+    width: 260px;
+  }
+
+  .associations-container {
+    padding: 24px 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* 2 colonnes sur tablette */
+  .associations-grille {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* 3 colonnes sur grand écran */
+@media (min-width: 960px) {
+  .associations-grille {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
