@@ -25,10 +25,11 @@
 
 .profil-card-header {
   background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-  padding: 36px 32px 24px;
+  padding: 24px 20px 20px;
   display: flex;
   align-items: center;
-  gap: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .profil-avatar {
@@ -100,10 +101,10 @@
 /* ===== INFOS (mode view) ===== */
 
 .profil-card-body {
-  padding: 28px 32px;
+  padding: 20px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px 32px;
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
 .profil-info-group {
@@ -113,7 +114,7 @@
 }
 
 .profil-info-group.full {
-  grid-column: 1 / -1;
+  grid-column: 1;
 }
 
 .profil-info-label {
@@ -137,10 +138,10 @@
 /* ===== FORMULAIRE ÉDITION ===== */
 
 .profil-form {
-  padding: 28px 32px;
+  padding: 20px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 24px;
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
 .profil-form-group {
@@ -150,7 +151,7 @@
 }
 
 .profil-form-group.full {
-  grid-column: 1 / -1;
+  grid-column: 1;
 }
 
 .profil-form-label {
@@ -190,7 +191,7 @@
 }
 
 .profil-form-actions {
-  grid-column: 1 / -1;
+  grid-column: 1;
   display: flex;
   gap: 12px;
   justify-content: flex-end;
@@ -249,7 +250,7 @@
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-  padding: 28px 32px;
+  padding: 20px;
 }
 
 .profil-animaux h2 {
@@ -349,7 +350,7 @@
   background: #fff;
   border-radius: 20px;
   box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-  padding: 28px 32px;
+  padding: 20px;
 }
 
 .profil-demandes-header {
@@ -478,29 +479,35 @@
 .offre-statut-refusee  { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
 .offre-statut-annulee  { background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; }
 
-/* ===== RESPONSIVE ===== */
+/* ===== DESKTOP (≥ 640px) ===== */
 
-@media (max-width: 640px) {
+@media (min-width: 640px) {
   .profil-card-header {
-    flex-wrap: wrap;
-    gap: 16px;
-    padding: 24px 20px 20px;
+    flex-wrap: nowrap;
+    gap: 24px;
+    padding: 36px 32px 24px;
   }
 
-  .profil-card-body,
+  .profil-card-body {
+    grid-template-columns: 1fr 1fr;
+    padding: 28px 32px;
+    gap: 20px 32px;
+  }
+
   .profil-form {
-    grid-template-columns: 1fr;
-    padding: 20px;
-    gap: 14px;
+    grid-template-columns: 1fr 1fr;
+    padding: 28px 32px;
+    gap: 16px 24px;
   }
 
   .profil-info-group.full,
   .profil-form-group.full,
   .profil-form-actions {
-    grid-column: 1;
+    grid-column: 1 / -1;
   }
 
-  .profil-animaux {
-    padding: 20px;
+  .profil-animaux,
+  .profil-demandes {
+    padding: 28px 32px;
   }
 }
