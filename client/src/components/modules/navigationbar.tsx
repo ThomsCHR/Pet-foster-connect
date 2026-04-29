@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../../assets/styles/navbar.css";
+import { ConnectedUser } from "../../contexts/AuthContext";
 
-function NavigationBar({ isLogged, connectedUser }) {
+type Props = {
+  isLogged: boolean;
+  connectedUser: ConnectedUser | null;
+};
+
+function NavigationBar({ isLogged, connectedUser }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
