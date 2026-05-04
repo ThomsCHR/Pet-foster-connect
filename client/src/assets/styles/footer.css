@@ -1,0 +1,22 @@
+.footer {
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #aaa;
+}
+
+.footer-sep {
+  margin: 0 8px;
+}
+
+.footer-cgu-link {
+  color: #aaa;
+  text-decoration: none;
+}
+
+.footer-cgu-link:hover {
+  color: #1D9E75;
+  text-decoration: underline;
+}

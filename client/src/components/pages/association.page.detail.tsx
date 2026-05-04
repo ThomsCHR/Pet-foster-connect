@@ -765,7 +765,7 @@ function AssociationDetailPage(_props: Props) {
             <p className="detail-animaux-subtitle">
               {association.animals.length === 0
                 ? "Aucun animal pour le moment"
-                : association.animals.length + " animal" + (association.animals.length > 1 ? "ux" : "") + " en attente d'une famille d'accueil"}
+                : association.animals.length + " animaux" + (association.animals.length > 1 ? "" : "") + " en attente d'une famille d'accueil"}
             </p>
           </div>
 

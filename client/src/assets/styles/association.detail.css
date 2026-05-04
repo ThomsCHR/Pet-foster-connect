@@ -51,10 +51,32 @@
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
-.detail-header-btn-logout {
+.detail-header-actions {
   position: absolute;
   top: 16px;
   right: 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.detail-header-btn-edit {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  padding: 7px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.detail-header-btn-edit:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.detail-header-btn-logout {
   background: rgba(239, 68, 68, 0.2);
   border: 1.5px solid rgba(255, 255, 255, 0.4);
   color: #fff;
@@ -69,6 +91,110 @@
 .detail-header-btn-logout:hover {
   background: rgba(239, 68, 68, 0.45);
 }
+
+/* ===== FORMULAIRE ÉDITION PROFIL ASSOCIATION ===== */
+.profil-asso-form {
+  margin-top: 4px;
+}
+
+.profil-asso-form-erreur {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.profil-asso-form-grille {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.profil-asso-form-groupe {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profil-asso-form-groupe.full {
+  grid-column: 1 / -1;
+}
+
+.profil-asso-form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+}
+
+.profil-asso-form-input,
+.profil-asso-form-select {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  outline: none;
+  background: white;
+  transition: border-color 0.15s;
+}
+
+.profil-asso-form-input:focus,
+.profil-asso-form-select:focus {
+  border-color: #1D9E75;
+}
+
+.profil-asso-form-textarea {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: sans-serif;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.profil-asso-form-textarea:focus { border-color: #1D9E75; }
+
+.profil-asso-form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.profil-asso-btn-annuler {
+  background: transparent;
+  border: 1.5px solid #d1d5db;
+  color: #555;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.profil-asso-btn-annuler:hover { background: #f3f4f6; }
+
+.profil-asso-btn-save {
+  background: #1D9E75;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.profil-asso-btn-save:hover    { background: #0F6E56; }
+.profil-asso-btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .detail-region-badge {
   display: inline-block;
@@ -656,15 +782,21 @@
 }
 
 
-/* ===== MOBILE : formulaire 1 colonne ===== */
+/* ===== MOBILE : formulaires 1 colonne ===== */
 @media (max-width: 640px) {
-  .animal-form-grille {
+  .animal-form-grille,
+  .profil-asso-form-grille {
     grid-template-columns: 1fr;
   }
 
   .detail-animaux-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .detail-header-actions {
+    flex-direction: column;
+    gap: 6px;
   }
 }
 
