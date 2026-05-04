@@ -28,16 +28,25 @@ export const getAnimalById = async (req: Request, res: Response) => {
 
 export const createAnimal = async (req: Request, res: Response) => {
   try {
-    const { name, species, breed, gender, description, status, associationId, dateOfBirth } = req.body;
+    if (req.user?.role !== "association") {
+      return res.status(403).json({ error: "Réservé aux associations" });
+    }
+
+    const assoc = await prisma.association.findUnique({ where: { userId: req.user.id } });
+    if (!assoc) {
+      return res.status(404).json({ error: "Association introuvable" });
+    }
+
+    const { name, species, breed, gender, description, status, dateOfBirth } = req.body;
     const newAnimal = await prisma.animal.create({
       data: {
         name,
         species,
-        breed,
+        breed: breed || null,
         gender,
         description,
-        status,
-        associationId,
+        status: status || "a_placer",
+        associationId: assoc.id,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
       },
     });
@@ -49,18 +58,34 @@ export const createAnimal = async (req: Request, res: Response) => {
 
 export const updateAnimal = async (req: Request, res: Response) => {
   try {
+    if (req.user?.role !== "association") {
+      return res.status(403).json({ error: "Réservé aux associations" });
+    }
+
     const { id } = req.params;
-    const { name, species, breed, gender, description, status, associationId, dateOfBirth } = req.body;
+    const animal = await prisma.animal.findUnique({
+      where: { id: Number(id) },
+      include: { association: true },
+    });
+
+    if (!animal) {
+      return res.status(404).json({ error: "Animal introuvable" });
+    }
+
+    if (animal.association.userId !== req.user.id) {
+      return res.status(403).json({ error: "Non autorisé" });
+    }
+
+    const { name, species, breed, gender, description, status, dateOfBirth } = req.body;
     const updatedAnimal = await prisma.animal.update({
       where: { id: Number(id) },
       data: {
         name,
         species,
-        breed,
+        breed: breed || null,
         gender,
         description,
         status,
-        associationId,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
       },
     });
@@ -72,13 +97,31 @@ export const updateAnimal = async (req: Request, res: Response) => {
 
 export const deleteAnimal = async (req: Request, res: Response) => {
   try {
+    if (req.user?.role !== "association") {
+      return res.status(403).json({ error: "Réservé aux associations" });
+    }
+
     const { id } = req.params;
+    const animal = await prisma.animal.findUnique({
+      where: { id: Number(id) },
+      include: { association: true },
+    });
+
+    if (!animal) {
+      return res.status(404).json({ error: "Animal introuvable" });
+    }
+
+    if (animal.association.userId !== req.user.id) {
+      return res.status(403).json({ error: "Non autorisé" });
+    }
+
     await prisma.animal.delete({ where: { id: Number(id) } });
     res.status(200).json({ message: "Animal deleted" });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
   }
 };
+
 export const getAnimalsByAssociation = async (req: Request, res: Response) => {
   try {
     const { associationId } = req.params;

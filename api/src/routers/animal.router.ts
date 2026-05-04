@@ -1,26 +1,26 @@
 import { Router } from "express";
 import { createAnimal, deleteAnimal, getAnimalById, getAnimals, getAnimalsByAssociation, updateAnimal } from "../controllers/animal.controller";
+import { requireAuth } from "../middlewares/auth.middleware";
 
 const animalRouter = Router();
 
 // recuperer tous les animaux
 animalRouter.get("/", getAnimals);
 
-// creer un animal
-animalRouter.post("/", createAnimal);
+// creer un animal (association connectée uniquement)
+animalRouter.post("/", requireAuth, createAnimal);
 
 // recuperer un animal par son ID
 animalRouter.get("/:id", getAnimalById);
 
-// mettre à jour un animal
-animalRouter.put("/:id", updateAnimal);
+// mettre à jour un animal (association propriétaire uniquement)
+animalRouter.put("/:id", requireAuth, updateAnimal);
 
 // recuperer les animaux par association
 animalRouter.get("/association/:associationId", getAnimalsByAssociation);
 
-
-// supprimer un animal
-animalRouter.delete("/:id", deleteAnimal);
+// supprimer un animal (association propriétaire uniquement)
+animalRouter.delete("/:id", requireAuth, deleteAnimal);
 
 
 

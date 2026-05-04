@@ -37,6 +37,7 @@ export const getAssociationById = async (req: Request, res: Response) => {
                     select: {
                         email: true,
                         phone: true,
+                        address: true,
                         region: true,
                         description: true,
                     },
@@ -86,6 +87,18 @@ export const createAssociation = async (req: Request, res: Response) => {
 export const updateAssociation = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { name, email, phone, address, description, region } = req.body;
+
+    if (req.user?.role !== "association") {
+        res.status(403).json({ error: "Réservé aux associations" });
+        return;
+    }
+
+    const assoc = await prisma.association.findUnique({ where: { id: Number(id) } });
+    if (!assoc || assoc.userId !== req.user.id) {
+        res.status(403).json({ error: "Non autorisé" });
+        return;
+    }
+
     try {
         const updatedAssociation = await prisma.association.update({
             where: { id: Number(id) },
