@@ -43,6 +43,7 @@ type Animal = {
   species: string;
   breed: string | null;
   gender: string;
+  dateOfBirth: string | null;
   description: string;
   status: string;
   images: AnimalImage[];
@@ -54,6 +55,7 @@ type Association = {
   user: {
     email: string;
     phone: string;
+    address: string;
     region: string | null;
     description: string | null;
   };
@@ -82,6 +84,27 @@ const REGION_LABELS: Record<string, string> = {
   La_Reunion:              "La Réunion",
   Mayotte:                 "Mayotte",
 };
+
+const REGIONS = [
+  { value: "Auvergne_Rhone_Alpes",     label: "Auvergne-Rhône-Alpes" },
+  { value: "Bourgogne_Franche_Comte",  label: "Bourgogne-Franche-Comté" },
+  { value: "Bretagne",                 label: "Bretagne" },
+  { value: "Centre_Val_de_Loire",      label: "Centre-Val de Loire" },
+  { value: "Corse",                    label: "Corse" },
+  { value: "Grand_Est",                label: "Grand Est" },
+  { value: "Hauts_de_France",          label: "Hauts-de-France" },
+  { value: "Ile_de_France",            label: "Île-de-France" },
+  { value: "Normandie",                label: "Normandie" },
+  { value: "Nouvelle_Aquitaine",       label: "Nouvelle-Aquitaine" },
+  { value: "Occitanie",                label: "Occitanie" },
+  { value: "Pays_de_la_Loire",         label: "Pays de la Loire" },
+  { value: "Provence_Alpes_Cote_Azur", label: "Provence-Alpes-Côte d'Azur" },
+  { value: "Guadeloupe",               label: "Guadeloupe" },
+  { value: "Martinique",               label: "Martinique" },
+  { value: "Guyane",                   label: "Guyane" },
+  { value: "La_Reunion",               label: "La Réunion" },
+  { value: "Mayotte",                  label: "Mayotte" },
+];
 
 const OFFER_STATUS_LABELS: Record<OfferStatus, string> = {
   soumise:  "En attente",
@@ -136,6 +159,30 @@ function AssociationDetailPage(_props: Props) {
   // Statuts des demandes du bénévole connecté par animal (animalId → statut)
   const [volunteerOffres, setVolunteerOffres] = useState<Record<number, OfferStatus>>({});
   const [volunteerOffreEnvoi, setVolunteerOffreEnvoi] = useState<number | null>(null);
+
+  // Édition du profil de l'association
+  const [editing, setEditing]         = useState(false);
+  const [saving, setSaving]           = useState(false);
+  const [editName, setEditName]       = useState("");
+  const [editEmail, setEditEmail]     = useState("");
+  const [editPhone, setEditPhone]     = useState("");
+  const [editAddress, setEditAddress] = useState("");
+  const [editRegion, setEditRegion]   = useState("");
+  const [editDescr, setEditDescr]     = useState("");
+  const [editError, setEditError]     = useState("");
+
+  // Formulaire d'ajout / modification d'animal
+  const [formVisible, setFormVisible]   = useState(false);
+  const [editAnimalId, setEditAnimalId] = useState<number | null>(null);
+  const [formNom, setFormNom]           = useState("");
+  const [formEspece, setFormEspece]     = useState("Chat");
+  const [formRace, setFormRace]         = useState("");
+  const [formGenre, setFormGenre]       = useState("Mâle");
+  const [formNaiss, setFormNaiss]       = useState("");
+  const [formDescr, setFormDescr]       = useState("");
+  const [formStatut, setFormStatut]     = useState("a_placer");
+  const [formEnvoi, setFormEnvoi]       = useState(false);
+  const [formErreur, setFormErreur]     = useState("");
 
   // Chargement de l'association
   useEffect(() => {
@@ -271,13 +318,11 @@ function AssociationDetailPage(_props: Props) {
       });
 
       if (reponse.ok) {
-        // Mettre à jour localement : changer le statut de cette demande
         setDemandesRecues((prev) =>
           prev.map((d) =>
             d.volunteerId === volunteerId && d.animalId === animalId
               ? { ...d, status }
-              : // Si la demande est acceptée, refuser automatiquement les autres pour ce même animal
-                status === "acceptee" && d.animalId === animalId && d.status === "soumise"
+              : status === "acceptee" && d.animalId === animalId && d.status === "soumise"
                 ? { ...d, status: "refusee" }
                 : d
           )
@@ -290,9 +335,211 @@ function AssociationDetailPage(_props: Props) {
     setOfferAction(false);
   }
 
+  // ── Édition du profil ──
+
+  function ouvrirEdition() {
+    if (!association) return;
+    setEditName(association.name);
+    setEditEmail(association.user.email);
+    setEditPhone(association.user.phone);
+    setEditAddress(association.user.address);
+    setEditRegion(association.user.region || "");
+    setEditDescr(association.user.description || "");
+    setEditError("");
+    setEditing(true);
+  }
+
+  function annulerEdition() {
+    setEditing(false);
+    setEditError("");
+  }
+
+  async function sauvegarderProfil(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setEditError("");
+
+    try {
+      const reponse = await apiFetch("/api/associations/" + id, {
+        method: "PUT",
+        body: JSON.stringify({
+          name: editName,
+          email: editEmail,
+          phone: editPhone,
+          address: editAddress,
+          region: editRegion,
+          description: editDescr,
+        }),
+      });
+
+      if (!reponse.ok) {
+        const json = await reponse.json();
+        setEditError(json.error || "Erreur lors de la sauvegarde");
+        setSaving(false);
+        return;
+      }
+
+      const json = await reponse.json();
+      setAssociation((prev) =>
+        prev
+          ? {
+              ...prev,
+              name: json.name,
+              user: {
+                ...prev.user,
+                email: json.user.email,
+                phone: json.user.phone,
+                address: json.user.address,
+                region: json.user.region,
+                description: json.user.description,
+              },
+            }
+          : prev
+      );
+      setEditing(false);
+    } catch (err) {
+      setEditError("Erreur réseau, veuillez réessayer");
+    }
+
+    setSaving(false);
+  }
+
+  // ── Gestion des animaux (association propriétaire) ──
+
+  function ouvrirFormAjout() {
+    setEditAnimalId(null);
+    setFormNom("");
+    setFormEspece("Chat");
+    setFormRace("");
+    setFormGenre("Mâle");
+    setFormNaiss("");
+    setFormDescr("");
+    setFormStatut("a_placer");
+    setFormErreur("");
+    setFormVisible(true);
+  }
+
+  function ouvrirFormEdit(animal: Animal) {
+    setEditAnimalId(animal.id);
+    setFormNom(animal.name);
+    setFormEspece(animal.species);
+    setFormRace(animal.breed || "");
+    setFormGenre(animal.gender);
+    setFormNaiss(animal.dateOfBirth ? animal.dateOfBirth.substring(0, 10) : "");
+    setFormDescr(animal.description);
+    setFormStatut(animal.status);
+    setFormErreur("");
+    setFormVisible(true);
+  }
+
+  function annulerForm() {
+    setFormVisible(false);
+    setEditAnimalId(null);
+    setFormErreur("");
+  }
+
+  async function ajouterAnimal(e: React.FormEvent) {
+    e.preventDefault();
+    setFormEnvoi(true);
+    setFormErreur("");
+
+    try {
+      const reponse = await apiFetch("/api/animals", {
+        method: "POST",
+        body: JSON.stringify({
+          name: formNom,
+          species: formEspece,
+          breed: formRace || null,
+          gender: formGenre,
+          dateOfBirth: formNaiss || null,
+          description: formDescr,
+          status: formStatut,
+        }),
+      });
+
+      if (!reponse.ok) {
+        const json = await reponse.json();
+        setFormErreur(json.error || "Erreur lors de la création");
+        setFormEnvoi(false);
+        return;
+      }
+
+      const json = await reponse.json();
+      const nouvelAnimal: Animal = { ...json.data, images: [] };
+      setAssociation((prev) =>
+        prev ? { ...prev, animals: [...prev.animals, nouvelAnimal] } : prev
+      );
+      annulerForm();
+    } catch (err) {
+      setFormErreur("Erreur réseau, veuillez réessayer");
+    }
+
+    setFormEnvoi(false);
+  }
+
+  async function modifierAnimal(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editAnimalId) return;
+    setFormEnvoi(true);
+    setFormErreur("");
+
+    try {
+      const reponse = await apiFetch(`/api/animals/${editAnimalId}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          name: formNom,
+          species: formEspece,
+          breed: formRace || null,
+          gender: formGenre,
+          dateOfBirth: formNaiss || null,
+          description: formDescr,
+          status: formStatut,
+        }),
+      });
+
+      if (!reponse.ok) {
+        const json = await reponse.json();
+        setFormErreur(json.error || "Erreur lors de la modification");
+        setFormEnvoi(false);
+        return;
+      }
+
+      const json = await reponse.json();
+      setAssociation((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          animals: prev.animals.map((a) =>
+            a.id === editAnimalId ? { ...a, ...json.data } : a
+          ),
+        };
+      });
+      annulerForm();
+    } catch (err) {
+      setFormErreur("Erreur réseau, veuillez réessayer");
+    }
+
+    setFormEnvoi(false);
+  }
+
+  async function supprimerAnimal(animalId: number) {
+    const ok = window.confirm("Supprimer cet animal ? Cette action est irréversible.");
+    if (!ok) return;
+
+    try {
+      const reponse = await apiFetch(`/api/animals/${animalId}`, { method: "DELETE" });
+      if (reponse.ok) {
+        setAssociation((prev) =>
+          prev ? { ...prev, animals: prev.animals.filter((a) => a.id !== animalId) } : prev
+        );
+      }
+    } catch (err) {
+      console.error("Erreur lors de la suppression :", err);
+    }
+  }
+
   // Rendu du bouton d'action pour un animal (côté bénévole)
   function renderBoutonAnimal(animal: Animal) {
-    // Un animal non disponible n'a pas de bouton d'action
     if (animal.status !== "a_placer") {
       return (
         <div className="demande-locked" style={{ background: "#f0fdf4", color: "#166534" }}>
@@ -345,7 +592,6 @@ function AssociationDetailPage(_props: Props) {
       );
     }
 
-    // Pas de demande ou demande annulée → bouton pour soumettre
     return (
       <button
         className="btn-demande"
@@ -372,7 +618,6 @@ function AssociationDetailPage(_props: Props) {
     );
   }
 
-  // Compte des demandes en attente pour l'association
   const demandesEnAttente = demandesRecues.filter((d) => d.status === "soumise").length;
 
   return (
@@ -386,36 +631,263 @@ function AssociationDetailPage(_props: Props) {
         </span>
 
         {estAssociationProprietaire() && (
-          <button className="detail-header-btn-logout" onClick={seDeconnecter}>
-            Se déconnecter
-          </button>
+          <div className="detail-header-actions">
+            {!editing && (
+              <button className="detail-header-btn-edit" onClick={ouvrirEdition}>
+                Modifier mon profil
+              </button>
+            )}
+            <button className="detail-header-btn-logout" onClick={seDeconnecter}>
+              Se déconnecter
+            </button>
+          </div>
         )}
       </div>
 
       {/* ===== INFOS ===== */}
       <div className="detail-infos">
         <div className="detail-infos-inner">
-          <p className="detail-description">
-            {association.user.description || "Aucune description disponible."}
-          </p>
-          <div className="detail-meta">
-            <span className="detail-meta-item">✉️ {association.user.email}</span>
-            <span className="detail-meta-item">📞 {association.user.phone}</span>
-            <span className="detail-meta-item">🐾 {association.animals.length} animaux</span>
-          </div>
+
+          {/* ── Mode lecture ── */}
+          {!editing && (
+            <>
+              <p className="detail-description">
+                {association.user.description || "Aucune description disponible."}
+              </p>
+              <div className="detail-meta">
+                <span className="detail-meta-item">✉️ {association.user.email}</span>
+                <span className="detail-meta-item">📞 {association.user.phone}</span>
+                <span className="detail-meta-item">📍 {association.user.address}</span>
+                <span className="detail-meta-item">🐾 {association.animals.length} animaux</span>
+              </div>
+            </>
+          )}
+
+          {/* ── Mode édition ── */}
+          {editing && (
+            <form className="profil-asso-form" onSubmit={sauvegarderProfil}>
+
+              {editError !== "" && (
+                <p className="profil-asso-form-erreur">{editError}</p>
+              )}
+
+              <div className="profil-asso-form-grille">
+                <div className="profil-asso-form-groupe full">
+                  <label className="profil-asso-form-label">Nom de l'association *</label>
+                  <input
+                    className="profil-asso-form-input"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="profil-asso-form-groupe">
+                  <label className="profil-asso-form-label">Email *</label>
+                  <input
+                    type="email"
+                    className="profil-asso-form-input"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="profil-asso-form-groupe">
+                  <label className="profil-asso-form-label">Téléphone *</label>
+                  <input
+                    type="tel"
+                    className="profil-asso-form-input"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="profil-asso-form-groupe full">
+                  <label className="profil-asso-form-label">Adresse *</label>
+                  <input
+                    className="profil-asso-form-input"
+                    value={editAddress}
+                    onChange={(e) => setEditAddress(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="profil-asso-form-groupe">
+                  <label className="profil-asso-form-label">Région</label>
+                  <select
+                    className="profil-asso-form-select"
+                    value={editRegion}
+                    onChange={(e) => setEditRegion(e.target.value)}
+                  >
+                    <option value="">-- Sélectionner --</option>
+                    {REGIONS.map((r) => (
+                      <option key={r.value} value={r.value}>{r.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="profil-asso-form-groupe full">
+                  <label className="profil-asso-form-label">
+                    Description <span style={{ fontWeight: 400, color: "#9ca3af" }}>(optionnel)</span>
+                  </label>
+                  <textarea
+                    className="profil-asso-form-textarea"
+                    value={editDescr}
+                    onChange={(e) => setEditDescr(e.target.value)}
+                    placeholder="Décrivez votre association..."
+                  />
+                </div>
+              </div>
+
+              <div className="profil-asso-form-actions">
+                <button type="button" className="profil-asso-btn-annuler" onClick={annulerEdition}>
+                  Annuler
+                </button>
+                <button type="submit" className="profil-asso-btn-save" disabled={saving}>
+                  {saving ? "Enregistrement..." : "Enregistrer"}
+                </button>
+              </div>
+
+            </form>
+          )}
+
         </div>
       </div>
 
       {/* ===== ANIMAUX ===== */}
       <div className="detail-animaux">
-        <h2>Nos animaux</h2>
-        <p className="detail-animaux-subtitle">
-          {association.animals.length === 0
-            ? "Aucun animal pour le moment"
-            : association.animals.length + " animal" + (association.animals.length > 1 ? "ux" : "") + " en attente d'une famille d'accueil"}
-        </p>
 
-        {association.animals.length === 0 && (
+        <div className="detail-animaux-header">
+          <div>
+            <h2>Nos animaux</h2>
+            <p className="detail-animaux-subtitle">
+              {association.animals.length === 0
+                ? "Aucun animal pour le moment"
+                : association.animals.length + " animaux" + (association.animals.length > 1 ? "" : "") + " en attente d'une famille d'accueil"}
+            </p>
+          </div>
+
+          {estAssociationProprietaire() && !formVisible && (
+            <button className="btn-animal-add" onClick={ouvrirFormAjout}>
+              + Ajouter un animal
+            </button>
+          )}
+        </div>
+
+        {/* ── Formulaire ajout / modification ── */}
+        {formVisible && (
+          <form
+            className="animal-form-panel"
+            onSubmit={editAnimalId !== null ? modifierAnimal : ajouterAnimal}
+          >
+            <h3 className="animal-form-titre">
+              {editAnimalId !== null ? "Modifier l'animal" : "Ajouter un animal"}
+            </h3>
+
+            {formErreur !== "" && (
+              <p className="animal-form-erreur">{formErreur}</p>
+            )}
+
+            <div className="animal-form-grille">
+              <div className="animal-form-groupe">
+                <label className="animal-form-label">Nom *</label>
+                <input
+                  className="animal-form-input"
+                  value={formNom}
+                  onChange={(e) => setFormNom(e.target.value)}
+                  required
+                  placeholder="Nom de l'animal"
+                />
+              </div>
+
+              <div className="animal-form-groupe">
+                <label className="animal-form-label">Espèce *</label>
+                <select
+                  className="animal-form-select"
+                  value={formEspece}
+                  onChange={(e) => setFormEspece(e.target.value)}
+                >
+                  <option value="Chat">Chat</option>
+                  <option value="Chien">Chien</option>
+                </select>
+              </div>
+
+              <div className="animal-form-groupe">
+                <label className="animal-form-label">Race</label>
+                <input
+                  className="animal-form-input"
+                  value={formRace}
+                  onChange={(e) => setFormRace(e.target.value)}
+                  placeholder="Optionnel"
+                />
+              </div>
+
+              <div className="animal-form-groupe">
+                <label className="animal-form-label">Genre *</label>
+                <select
+                  className="animal-form-select"
+                  value={formGenre}
+                  onChange={(e) => setFormGenre(e.target.value)}
+                >
+                  <option value="Mâle">Mâle</option>
+                  <option value="Femelle">Femelle</option>
+                </select>
+              </div>
+
+              <div className="animal-form-groupe">
+                <label className="animal-form-label">Date de naissance</label>
+                <input
+                  type="date"
+                  className="animal-form-input"
+                  value={formNaiss}
+                  onChange={(e) => setFormNaiss(e.target.value)}
+                />
+              </div>
+
+              <div className="animal-form-groupe">
+                <label className="animal-form-label">Statut *</label>
+                <select
+                  className="animal-form-select"
+                  value={formStatut}
+                  onChange={(e) => setFormStatut(e.target.value)}
+                >
+                  <option value="a_placer">À placer</option>
+                  <option value="placement_en_cours">Placement en cours</option>
+                  <option value="place">Placé</option>
+                  <option value="adopte">Adopté</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="animal-form-groupe">
+              <label className="animal-form-label">Description</label>
+              <textarea
+                className="animal-form-textarea"
+                value={formDescr}
+                onChange={(e) => setFormDescr(e.target.value)}
+                placeholder="Décrivez l'animal, son caractère, ses besoins..."
+              />
+            </div>
+
+            <div className="animal-form-actions">
+              <button type="button" className="animal-form-btn-annuler" onClick={annulerForm}>
+                Annuler
+              </button>
+              <button type="submit" className="animal-form-btn-save" disabled={formEnvoi}>
+                {formEnvoi
+                  ? "Enregistrement..."
+                  : editAnimalId !== null
+                    ? "Enregistrer"
+                    : "Ajouter"}
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* ── Grille animaux ── */}
+        {association.animals.length === 0 && !formVisible && (
           <p style={{ color: "#aaa", fontSize: "14px" }}>Aucun animal pour le moment.</p>
         )}
 
@@ -434,23 +906,43 @@ function AssociationDetailPage(_props: Props) {
             return (
               <div key={animal.id} className="detail-animal-card">
 
-                <div className="detail-animal-photo-wrapper">
+                <Link to={"/animals/" + animal.id} className="detail-animal-photo-wrapper">
                   <img src={photoUrl} alt={animal.name} className="detail-animal-photo" />
                   <span className="detail-animal-statut statut-dispo">
                     {getStatusLabel(animal.status)}
                   </span>
-                </div>
+                </Link>
 
                 <div className="detail-animal-infos">
                   <div className="detail-animal-top">
-                    <h3 className="detail-animal-nom">{animal.name}</h3>
+                    <h3 className="detail-animal-nom">
+                      <Link to={"/animals/" + animal.id} className="detail-animal-nom-link">{animal.name}</Link>
+                    </h3>
                     <span className="detail-animal-espece">{emoji}</span>
                   </div>
                   <p className="detail-animal-race">{raceOuEspece} · {animal.gender}</p>
                   <p className="detail-animal-description">{animal.description}</p>
 
-                  {/* Bouton de demande (non visible pour l'association propriétaire) */}
+                  {/* Boutons bénévole (non visibles pour l'association propriétaire) */}
                   {!estAssociationProprietaire() && renderBoutonAnimal(animal)}
+
+                  {/* Boutons modifier / supprimer (association propriétaire uniquement) */}
+                  {estAssociationProprietaire() && (
+                    <div className="detail-animal-actions-proprio">
+                      <button
+                        className="btn-animal-edit"
+                        onClick={() => ouvrirFormEdit(animal)}
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        className="btn-animal-delete"
+                        onClick={() => supprimerAnimal(animal.id)}
+                      >
+                        Supprimer
+                      </button>
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -503,12 +995,10 @@ function AssociationDetailPage(_props: Props) {
                 return (
                   <div key={`${demande.volunteerId}-${demande.animalId}`} className="detail-demande-item">
 
-                    {/* Photo de l'animal */}
                     <Link to={"/animals/" + animal.id}>
                       <img src={photoUrl} alt={animal.name} className="detail-demande-photo" />
                     </Link>
 
-                    {/* Infos bénévole + animal */}
                     <div className="detail-demande-infos">
                       <p className="detail-demande-benevole">
                         {volunteer.firstname} {volunteer.lastname}
@@ -521,7 +1011,6 @@ function AssociationDetailPage(_props: Props) {
                       </p>
                     </div>
 
-                    {/* Statut + boutons d'action */}
                     <div className="detail-demande-actions">
                       <span className={"offre-statut " + OFFER_STATUS_CLASS[demande.status]}>
                         {OFFER_STATUS_LABELS[demande.status]}

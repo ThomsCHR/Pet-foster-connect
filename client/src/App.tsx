@@ -9,7 +9,9 @@ import AnimalDetailPage from './components/pages/animal.page'
 import RegisterPage from './components/pages/connexion.register.page'
 import LoginPage from './components/pages/connexion.login.page'
 import VolunteerPage from './components/pages/volunteer.page'
+import CguPage from './components/pages/cgu.page'
 import NavigationBar from "./components/modules/navigationbar"
+import Footer from "./components/modules/footer"
 import { useAuth } from './contexts/AuthContext'
 
 function App() {
@@ -28,7 +30,10 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/auth" element={<LoginPage />} />
         <Route path="/volunteer/:id" element={<VolunteerPage />} />
+        <Route path="/cgu" element={<CguPage />} />
       </Routes>
+
+      <Footer />
     </>
   )
 }

@@ -130,10 +130,6 @@ function HomePage() {
         <Link to="/register" className="btn-green">Commencer maintenant</Link>
       </section>
 
-      {/* ===== FOOTER ===== */}
-      <footer className="footer">
-        © 2025 Pet Foster Connect — Fait avec ❤️ pour les animaux
-      </footer>
 
     </div>
   );
