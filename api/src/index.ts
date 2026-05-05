@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import Router from './routers/router';
+import { errorMiddleware } from './middlewares/error.middleware';
 
 dotenv.config();
 
@@ -21,6 +22,8 @@ app.get('/health', (req, res) => {
 app.get('/', (req, res) => {
   res.json({ message: 'API is running' });
 });
+
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

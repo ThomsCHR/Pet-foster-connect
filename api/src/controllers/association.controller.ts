@@ -1,146 +1,100 @@
-import { type Request, type Response } from "express";
+import { type Request, type Response, type NextFunction } from "express";
 import { prisma } from "../client";
+import { AppError } from "../middlewares/error.middleware";
 
+export const getAssociations = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const associations = await prisma.association.findMany({
+      include: {
+        user: { select: { email: true, phone: true, region: true, description: true } },
+        _count: { select: { animals: true } },
+      },
+    });
+    res.json(associations);
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const getAssociations = async (req: Request, res: Response) => {
-    try {
-        const associations = await prisma.association.findMany({
-            include: {
-                // On sélectionne les champs du user sans le password
-                user: {
-                    select: {
-                        email: true,
-                        phone: true,
-                        region: true,
-                        description: true,
-                    },
-                },
-                // _count permet de récupérer le nombre d'animaux sans les charger tous
-                _count: {
-                    select: { animals: true },
-                },
-            },
-        });
-        res.json(associations);
-    } catch (error) {
-        console.error("Error fetching associations:", error);
-        res.status(500).json({ error: "An error occurred while fetching associations." });
-    }
+export const getAssociationById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const association = await prisma.association.findUnique({
+      where: { id: Number(req.params.id) },
+      include: {
+        user: { select: { email: true, phone: true, address: true, region: true, description: true } },
+        animals: { include: { images: true } },
+      },
+    });
+    if (!association) throw new AppError(404, "Association introuvable");
+    res.json(association);
+  } catch (error) {
+    next(error);
+  }
 };
-export const getAssociationById = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    try {
-        const association = await prisma.association.findUnique({
-            where: { id: Number(id) },
-            include: {
-                user: {
-                    select: {
-                        email: true,
-                        phone: true,
-                        address: true,
-                        region: true,
-                        description: true,
-                    },
-                },
-                animals: {
-                    include: {
-                        images: true,
-                    },
-                },
-            },
-        });
-        if (association) {
-            res.json(association);
-        } else {
-            res.status(404).json({ error: "Association not found." });
-        }
-    } catch (error) {
-        console.error(`Error fetching association with id ${id}:`, error);
-        res.status(500).json({ error: "An error occurred while fetching the association." });
-    }
-};
-export const createAssociation = async (req: Request, res: Response) => {
+
+export const createAssociation = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const { name, siret, email, phone, address, description, region } = req.body;
-    try {
-        const newAssociation = await prisma.association.create({
-            data: {
-                name,
-                siret,
-                user: {
-                    create: {
-                        email,
-                        phone,
-                        address,
-                        description: description || undefined,
-                        region: region || undefined,
-                        password: "",
-                    },
-                },
-            },
-        });
-        res.status(201).json(newAssociation);
-    } catch (error) {
-        console.error("Error creating association:", error);
-        res.status(500).json({ error: "An error occurred while creating the association." });
-    }
+    const newAssociation = await prisma.association.create({
+      data: {
+        name,
+        siret,
+        user: {
+          create: {
+            email,
+            phone,
+            address,
+            description: description || undefined,
+            region: region || undefined,
+            password: "",
+          },
+        },
+      },
+    });
+    res.status(201).json(newAssociation);
+  } catch (error) {
+    next(error);
+  }
 };
-export const updateAssociation = async (req: Request, res: Response) => {
-    const { id } = req.params;
+
+export const updateAssociation = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const { name, email, phone, address, description, region } = req.body;
 
-    if (req.user?.role !== "association") {
-        res.status(403).json({ error: "Réservé aux associations" });
-        return;
-    }
+    if (req.user?.role !== "association") throw new AppError(403, "Réservé aux associations");
 
-    const assoc = await prisma.association.findUnique({ where: { id: Number(id) } });
-    if (!assoc || assoc.userId !== req.user.id) {
-        res.status(403).json({ error: "Non autorisé" });
-        return;
-    }
+    const assoc = await prisma.association.findUnique({ where: { id: Number(req.params.id) } });
+    if (!assoc || assoc.userId !== req.user.id) throw new AppError(403);
 
-    try {
-        const updatedAssociation = await prisma.association.update({
-            where: { id: Number(id) },
-            data: {
-                name,
-                user: {
-                    update: {
-                        email,
-                        phone,
-                        address,
-                        description: description || undefined,
-                        region: region || undefined,
-                    },
-                },
-            },
-            include: {
-                user: {
-                    select: {
-                        email: true,
-                        phone: true,
-                        address: true,
-                        region: true,
-                        description: true,
-                    },
-                },
-            },
-        });
-        res.json(updatedAssociation);
-    } catch (error) {
-        console.error(`Error updating association with id ${id}:`, error);
-        res.status(500).json({ error: "An error occurred while updating the association." });
-    }
+    const updatedAssociation = await prisma.association.update({
+      where: { id: Number(req.params.id) },
+      data: {
+        name,
+        user: {
+          update: {
+            email,
+            phone,
+            address,
+            description: description || undefined,
+            region: region || undefined,
+          },
+        },
+      },
+      include: {
+        user: { select: { email: true, phone: true, address: true, region: true, description: true } },
+      },
+    });
+    res.json(updatedAssociation);
+  } catch (error) {
+    next(error);
+  }
 };
-export const deleteAssociation = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    try {
-        await prisma.association.delete({
-            where: { id: Number(id) },
-        });
-        res.json({ message: "Association deleted successfully." });
-    } catch (error) {
-        console.error(`Error deleting association with id ${id}:`, error);
-        res.status(500).json({ error: "An error occurred while deleting the association." });
-    }   
+
+export const deleteAssociation = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await prisma.association.delete({ where: { id: Number(req.params.id) } });
+    res.json({ message: "Association supprimée" });
+  } catch (error) {
+    next(error);
+  }
 };

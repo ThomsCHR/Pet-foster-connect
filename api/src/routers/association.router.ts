@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { createAssociation, deleteAssociation, getAssociationById, getAssociations, updateAssociation } from "../controllers/association.controller";
 import { requireAuth } from "../middlewares/auth.middleware";
+import { validate } from "../middlewares/validate.middleware";
+import { updateAssociationSchema } from "../schemas";
 
 const associationRouter = Router();
 
@@ -15,7 +17,7 @@ associationRouter.post("/", createAssociation);
 associationRouter.get("/:id", getAssociationById);
 
 // mettre à jour une association (association propriétaire uniquement)
-associationRouter.put("/:id", requireAuth, updateAssociation);
+associationRouter.put("/:id", requireAuth, validate(updateAssociationSchema), updateAssociation);
 
 // supprimer une association
 associationRouter.delete("/:id", deleteAssociation);
