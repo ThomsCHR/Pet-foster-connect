@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { apiFetch } from "../../lib/api";
+import { apiFetch, API_BASE } from "../../lib/api";
 import { useAuth } from "../../contexts/AuthContext";
 import "../../assets/styles/association.detail.css";
 
@@ -183,6 +183,7 @@ function AssociationDetailPage(_props: Props) {
   const [formStatut, setFormStatut]     = useState("a_placer");
   const [formEnvoi, setFormEnvoi]       = useState(false);
   const [formErreur, setFormErreur]     = useState("");
+  const [formImage, setFormImage]       = useState<File | null>(null);
 
   // Chargement de l'association
   useEffect(() => {
@@ -436,6 +437,7 @@ function AssociationDetailPage(_props: Props) {
     setFormVisible(false);
     setEditAnimalId(null);
     setFormErreur("");
+    setFormImage(null);
   }
 
   async function ajouterAnimal(e: React.FormEvent) {
@@ -465,7 +467,22 @@ function AssociationDetailPage(_props: Props) {
       }
 
       const json = await reponse.json();
-      const nouvelAnimal: Animal = { ...json.data, images: [] };
+      let nouvelAnimal: Animal = { ...json.data, images: [] };
+
+      if (formImage) {
+        const fd = new FormData();
+        fd.append("image", formImage);
+        const imgRes = await fetch(`${API_BASE}/api/animals/${nouvelAnimal.id}/images`, {
+          method: "POST",
+          credentials: "include",
+          body: fd,
+        });
+        if (imgRes.ok) {
+          const imgJson = await imgRes.json();
+          nouvelAnimal = { ...nouvelAnimal, images: [imgJson.data] };
+        }
+      }
+
       setAssociation((prev) =>
         prev ? { ...prev, animals: [...prev.animals, nouvelAnimal] } : prev
       );
@@ -870,6 +887,25 @@ function AssociationDetailPage(_props: Props) {
                 placeholder="Décrivez l'animal, son caractère, ses besoins..."
               />
             </div>
+
+            {editAnimalId === null && (
+              <div className="animal-form-groupe">
+                <label className="animal-form-label">Photo</label>
+                <input
+                  type="file"
+                  className="animal-form-input"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={(e) => setFormImage(e.target.files?.[0] ?? null)}
+                />
+                {formImage && (
+                  <img
+                    src={URL.createObjectURL(formImage)}
+                    alt="Aperçu"
+                    style={{ marginTop: 8, maxHeight: 120, borderRadius: 6 }}
+                  />
+                )}
+              </div>
+            )}
 
             <div className="animal-form-actions">
               <button type="button" className="animal-form-btn-annuler" onClick={annulerForm}>

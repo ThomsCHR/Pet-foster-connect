@@ -1,121 +1,69 @@
-import { type Request, type Response } from "express";
+import { type Request, type Response, type NextFunction } from "express";
 import { prisma } from "../client";
+import { AppError } from "../middlewares/error.middleware";
 
-// Récupère le profil d'un bénévole avec ses infos et ses animaux accueillis
-export const getVolunteerById = async (req: Request, res: Response): Promise<void> => {
-  const volunteerId = Number(req.params.id);
-
+export const getVolunteerById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const volunteer = await prisma.volunteer.findUnique({
-      where: { id: volunteerId },
+      where: { id: Number(req.params.id) },
       include: {
-        // select : on choisit exactement les champs qu'on veut — le password n'est pas listé donc il ne sera jamais chargé
         user: {
           select: {
-            id: true,
-            email: true,
-            phone: true,
-            address: true,
-            image: true,
-            region: true,
-            description: true,
-            created_at: true,
-            updated_at: true,
+            id: true, email: true, phone: true, address: true,
+            image: true, region: true, description: true,
+            created_at: true, updated_at: true,
           },
         },
-        animal: {
-          include: {
-            images: true,
-            association: true,
-          },
-        },
+        animal: { include: { images: true, association: true } },
       },
     });
 
-    if (volunteer === null) {
-      res.status(404).json({ error: "Bénévole introuvable" });
-      return;
-    }
-
-    // volunteer.user ne contient pas le password grâce au select ci-dessus
-    // on peut retourner l'objet directement
+    if (!volunteer) throw new AppError(404, "Bénévole introuvable");
     res.status(200).json(volunteer);
-
   } catch (error) {
-    console.error("Erreur getVolunteerById :", error);
-    res.status(500).json({ error: "Erreur serveur" });
+    next(error);
   }
 };
 
-
-// Met à jour les infos d'un bénévole (seulement le sien)
-export const updateVolunteer = async (req: Request, res: Response): Promise<void> => {
-  const volunteerId = Number(req.params.id);
-
-  const { firstname, lastname, capacity, email, phone, address, region, description } = req.body;
-
+export const updateVolunteer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    // On vérifie d'abord que le bénévole existe
-    const volunteer = await prisma.volunteer.findUnique({
-      where: { id: volunteerId },
-    });
+    const volunteerId = Number(req.params.id);
+    const { firstname, lastname, capacity, email, phone, address, region, description } = req.body;
 
-    if (volunteer === null) {
-      res.status(404).json({ error: "Bénévole introuvable" });
-      return;
-    }
+    const volunteer = await prisma.volunteer.findUnique({ where: { id: volunteerId } });
+    if (!volunteer) throw new AppError(404, "Bénévole introuvable");
+    if (volunteer.userId !== req.user!.id) throw new AppError(403);
 
-    // Seul le propriétaire du profil peut modifier ses informations
-    if (volunteer.userId !== req.user!.id) {
-      res.status(403).json({ error: "Vous n'êtes pas autorisé à modifier ce profil" });
-      return;
-    }
-
-    // Mise à jour du bénévole et de l'utilisateur associé en une seule requête Prisma
     const volunteerMisAJour = await prisma.volunteer.update({
       where: { id: volunteerId },
       data: {
-        firstname: firstname,
-        lastname: lastname,
-        capacity: capacity,
+        firstname,
+        lastname,
+        capacity,
         user: {
           update: {
-            email: email,
-            phone: phone,
-            address: address,
+            email,
+            phone,
+            address,
             region: region || undefined,
             description: description || undefined,
           },
         },
       },
       include: {
-        // Même principe : select pour ne jamais charger le password
         user: {
           select: {
-            id: true,
-            email: true,
-            phone: true,
-            address: true,
-            image: true,
-            region: true,
-            description: true,
-            created_at: true,
-            updated_at: true,
+            id: true, email: true, phone: true, address: true,
+            image: true, region: true, description: true,
+            created_at: true, updated_at: true,
           },
         },
-        animal: {
-          include: {
-            images: true,
-            association: true,
-          },
-        },
+        animal: { include: { images: true, association: true } },
       },
     });
 
     res.status(200).json(volunteerMisAJour);
-
   } catch (error) {
-    console.error("Erreur updateVolunteer :", error);
-    res.status(500).json({ error: "Erreur serveur" });
+    next(error);
   }
 };

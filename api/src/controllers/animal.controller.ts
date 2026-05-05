@@ -1,41 +1,35 @@
-import { type Request, type Response } from "express";
+import { type Request, type Response, type NextFunction } from "express";
 import { prisma } from "../client";
+import { AppError } from "../middlewares/error.middleware";
 
-export const getAnimals = async (req: Request, res: Response) => {
+export const getAnimals = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const animals = await prisma.animal.findMany({ include: { images: true, association: true } });
     res.status(200).json({ message: "Get all animals", data: animals });
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur", error });
+    next(error);
   }
 };
 
-export const getAnimalById = async (req: Request, res: Response) => {
+export const getAnimalById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
     const animal = await prisma.animal.findUnique({
-      where: { id: Number(id) },
+      where: { id: Number(req.params.id) },
       include: { images: true, association: { include: { user: true } } },
     });
-    if (!animal) {
-      return res.status(404).json({ message: "Animal not found" });
-    }
+    if (!animal) throw new AppError(404, "Animal introuvable");
     res.status(200).json({ message: "Get animal by ID", data: animal });
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur", error });
+    next(error);
   }
 };
 
-export const createAnimal = async (req: Request, res: Response) => {
+export const createAnimal = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (req.user?.role !== "association") {
-      return res.status(403).json({ error: "Réservé aux associations" });
-    }
+    if (req.user?.role !== "association") throw new AppError(403, "Réservé aux associations");
 
     const assoc = await prisma.association.findUnique({ where: { userId: req.user.id } });
-    if (!assoc) {
-      return res.status(404).json({ error: "Association introuvable" });
-    }
+    if (!assoc) throw new AppError(404, "Association introuvable");
 
     const { name, species, breed, gender, description, status, dateOfBirth } = req.body;
     const newAnimal = await prisma.animal.create({
@@ -52,33 +46,24 @@ export const createAnimal = async (req: Request, res: Response) => {
     });
     res.status(201).json({ message: "Animal created", data: newAnimal });
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur", error });
+    next(error);
   }
 };
 
-export const updateAnimal = async (req: Request, res: Response) => {
+export const updateAnimal = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (req.user?.role !== "association") {
-      return res.status(403).json({ error: "Réservé aux associations" });
-    }
+    if (req.user?.role !== "association") throw new AppError(403, "Réservé aux associations");
 
-    const { id } = req.params;
     const animal = await prisma.animal.findUnique({
-      where: { id: Number(id) },
+      where: { id: Number(req.params.id) },
       include: { association: true },
     });
-
-    if (!animal) {
-      return res.status(404).json({ error: "Animal introuvable" });
-    }
-
-    if (animal.association.userId !== req.user.id) {
-      return res.status(403).json({ error: "Non autorisé" });
-    }
+    if (!animal) throw new AppError(404, "Animal introuvable");
+    if (animal.association.userId !== req.user.id) throw new AppError(403);
 
     const { name, species, breed, gender, description, status, dateOfBirth } = req.body;
     const updatedAnimal = await prisma.animal.update({
-      where: { id: Number(id) },
+      where: { id: Number(req.params.id) },
       data: {
         name,
         species,
@@ -91,46 +76,36 @@ export const updateAnimal = async (req: Request, res: Response) => {
     });
     res.status(200).json({ message: "Animal updated", data: updatedAnimal });
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur", error });
+    next(error);
   }
 };
 
-export const deleteAnimal = async (req: Request, res: Response) => {
+export const deleteAnimal = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (req.user?.role !== "association") {
-      return res.status(403).json({ error: "Réservé aux associations" });
-    }
+    if (req.user?.role !== "association") throw new AppError(403, "Réservé aux associations");
 
-    const { id } = req.params;
     const animal = await prisma.animal.findUnique({
-      where: { id: Number(id) },
+      where: { id: Number(req.params.id) },
       include: { association: true },
     });
+    if (!animal) throw new AppError(404, "Animal introuvable");
+    if (animal.association.userId !== req.user.id) throw new AppError(403);
 
-    if (!animal) {
-      return res.status(404).json({ error: "Animal introuvable" });
-    }
-
-    if (animal.association.userId !== req.user.id) {
-      return res.status(403).json({ error: "Non autorisé" });
-    }
-
-    await prisma.animal.delete({ where: { id: Number(id) } });
+    await prisma.animal.delete({ where: { id: Number(req.params.id) } });
     res.status(200).json({ message: "Animal deleted" });
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur", error });
+    next(error);
   }
 };
 
-export const getAnimalsByAssociation = async (req: Request, res: Response) => {
+export const getAnimalsByAssociation = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { associationId } = req.params;
     const animals = await prisma.animal.findMany({
-      where: { associationId: Number(associationId) },
+      where: { associationId: Number(req.params.associationId) },
       include: { images: true },
     });
     res.status(200).json({ message: "Get animals by association", data: animals });
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur", error });
+    next(error);
   }
 };

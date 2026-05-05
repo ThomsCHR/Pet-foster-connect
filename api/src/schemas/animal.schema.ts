@@ -4,9 +4,9 @@ import { animalStatusEnum } from "./shared.schema";
 export const createAnimalSchema = z.object({
   name: z.string().min(1, "Nom requis"),
   species: z.string().min(1, "Espèce requise"),
-  breed: z.string().optional(),
+  breed: z.string().nullable().optional(),
   gender: z.string().min(1, "Genre requis"),
-  description: z.string().min(10, "Description trop courte (minimum 10 caractères)"),
+  description: z.string().min(1, "Description requise"),
   status: animalStatusEnum.default("a_placer"),
   dateOfBirth: z.coerce.date().optional().nullable(),
 });
