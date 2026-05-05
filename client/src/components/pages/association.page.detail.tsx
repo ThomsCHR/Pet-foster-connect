@@ -184,6 +184,7 @@ function AssociationDetailPage(_props: Props) {
   const [formEnvoi, setFormEnvoi]       = useState(false);
   const [formErreur, setFormErreur]     = useState("");
   const [formImage, setFormImage]       = useState<File | null>(null);
+  const [formImages, setFormImages]     = useState<File[]>([]);
 
   // Chargement de l'association
   useEffect(() => {
@@ -438,6 +439,7 @@ function AssociationDetailPage(_props: Props) {
     setEditAnimalId(null);
     setFormErreur("");
     setFormImage(null);
+    setFormImages([]);
   }
 
   async function ajouterAnimal(e: React.FormEvent) {
@@ -522,12 +524,28 @@ function AssociationDetailPage(_props: Props) {
       }
 
       const json = await reponse.json();
+      let newImages: AnimalImage[] = association?.animals.find((a) => a.id === editAnimalId)?.images ?? [];
+
+      for (const file of formImages) {
+        const fd = new FormData();
+        fd.append("image", file);
+        const imgRes = await fetch(`${API_BASE}/api/animals/${editAnimalId}/images`, {
+          method: "POST",
+          credentials: "include",
+          body: fd,
+        });
+        if (imgRes.ok) {
+          const imgJson = await imgRes.json();
+          newImages = [...newImages, imgJson.data];
+        }
+      }
+
       setAssociation((prev) => {
         if (!prev) return prev;
         return {
           ...prev,
           animals: prev.animals.map((a) =>
-            a.id === editAnimalId ? { ...a, ...json.data } : a
+            a.id === editAnimalId ? { ...a, ...json.data, images: newImages } : a
           ),
         };
       });
@@ -537,6 +555,30 @@ function AssociationDetailPage(_props: Props) {
     }
 
     setFormEnvoi(false);
+  }
+
+  async function supprimerImage(animalId: number, imageId: number) {
+    try {
+      const res = await fetch(`${API_BASE}/api/animals/images/${imageId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (res.ok) {
+        setAssociation((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            animals: prev.animals.map((a) =>
+              a.id === animalId
+                ? { ...a, images: a.images.filter((img) => img.id !== imageId) }
+                : a
+            ),
+          };
+        });
+      }
+    } catch (err) {
+      console.error("Erreur suppression image :", err);
+    }
   }
 
   async function supprimerAnimal(animalId: number) {
@@ -888,24 +930,79 @@ function AssociationDetailPage(_props: Props) {
               />
             </div>
 
-            {editAnimalId === null && (
-              <div className="animal-form-groupe">
-                <label className="animal-form-label">Photo</label>
-                <input
-                  type="file"
-                  className="animal-form-input"
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={(e) => setFormImage(e.target.files?.[0] ?? null)}
+            {/* ── Gestion des images ── */}
+            <div className="animal-form-groupe">
+              <label className="animal-form-label">
+                {editAnimalId !== null ? "Photos existantes" : "Photo"}
+              </label>
+
+              {/* Images existantes (mode édition uniquement) */}
+              {editAnimalId !== null && (
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+                  {(association?.animals.find((a) => a.id === editAnimalId)?.images ?? []).map((img) => (
+                    <div key={img.id} style={{ position: "relative" }}>
+                      <img
+                        src={img.thumb || img.url}
+                        alt="photo"
+                        style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 6 }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => supprimerImage(editAnimalId, img.id)}
+                        style={{
+                          position: "absolute", top: 2, right: 2,
+                          background: "rgba(0,0,0,0.6)", color: "#fff",
+                          border: "none", borderRadius: "50%",
+                          width: 20, height: 20, cursor: "pointer", fontSize: 12,
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  {(association?.animals.find((a) => a.id === editAnimalId)?.images ?? []).length === 0 && (
+                    <p style={{ color: "#aaa", fontSize: 13 }}>Aucune photo</p>
+                  )}
+                </div>
+              )}
+
+              {/* Input fichier */}
+              <input
+                type="file"
+                className="animal-form-input"
+                accept="image/jpeg,image/png,image/webp"
+                multiple={editAnimalId !== null}
+                onChange={(e) => {
+                  const files = Array.from(e.target.files ?? []);
+                  if (editAnimalId !== null) {
+                    setFormImages(files);
+                  } else {
+                    setFormImage(files[0] ?? null);
+                  }
+                }}
+              />
+
+              {/* Aperçu nouvelles images */}
+              {editAnimalId === null && formImage && (
+                <img
+                  src={URL.createObjectURL(formImage)}
+                  alt="Aperçu"
+                  style={{ marginTop: 8, maxHeight: 120, borderRadius: 6 }}
                 />
-                {formImage && (
-                  <img
-                    src={URL.createObjectURL(formImage)}
-                    alt="Aperçu"
-                    style={{ marginTop: 8, maxHeight: 120, borderRadius: 6 }}
-                  />
-                )}
-              </div>
-            )}
+              )}
+              {editAnimalId !== null && formImages.length > 0 && (
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
+                  {formImages.map((f, i) => (
+                    <img
+                      key={i}
+                      src={URL.createObjectURL(f)}
+                      alt={`Aperçu ${i + 1}`}
+                      style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 6 }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
 
             <div className="animal-form-actions">
               <button type="button" className="animal-form-btn-annuler" onClick={annulerForm}>

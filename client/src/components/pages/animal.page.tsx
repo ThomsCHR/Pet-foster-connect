@@ -275,25 +275,28 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
 
   return (
     <div className="animal-detail-page">
+    <div className="animal-detail-wrapper">
     <div className="animal-detail-card">
 
       {/* ===== GALERIE ===== */}
       <div className="animal-gallery">
-        <img
-          src={animal.images[photoIndex]?.url ?? "https://placehold.co/800x600?text=Pas+de+photo"}
-          alt={animal.name}
-          className="animal-gallery-main"
-        />
-        <span className={`animal-gallery-statut ${STATUS_CLASS[animal.status]}`}>
-          {STATUS_LABELS[animal.status]}
-        </span>
+        <div className="animal-gallery-photo">
+          <img
+            src={animal.images[photoIndex]?.url ?? "https://placehold.co/800x600?text=Pas+de+photo"}
+            alt={animal.name}
+            className="animal-gallery-main"
+          />
+          <span className={`animal-gallery-statut ${STATUS_CLASS[animal.status]}`}>
+            {STATUS_LABELS[animal.status]}
+          </span>
+        </div>
 
         {animal.images.length > 1 && (
           <div className="animal-gallery-thumbs">
             {animal.images.map((img, index) => (
               <img
                 key={img.id}
-                src={img.thumb}
+                src={img.thumb || img.url}
                 alt=""
                 className={`animal-gallery-thumb ${index === photoIndex ? "active" : ""}`}
                 onClick={() => setPhotoIndex(index)}
@@ -348,6 +351,8 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
       <div className="animal-detail-demande">
         {renderBoutonDemande()}
       </div>
+
+    </div>
 
     </div>
     </div>
