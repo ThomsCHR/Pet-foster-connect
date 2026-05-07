@@ -217,7 +217,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/app/prisma/generated/prisma",
+      "value": "C:\\Users\\thoma\\Desktop\\projet-cda\\Pet-foster-connect\\api\\prisma\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -226,7 +226,7 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "linux-musl-openssl-3.0.x",
+        "value": "windows",
         "native": true
       },
       {
@@ -235,7 +235,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/app/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\thoma\\Desktop\\projet-cda\\Pet-foster-connect\\api\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -249,6 +249,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

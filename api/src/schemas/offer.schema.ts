@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const createOfferSchema = z.object({
   animalId: z
-    .number({ invalid_type_error: "animalId doit être un nombre" })
+    .number({ error: "animalId doit être un nombre" })
     .int("animalId doit être un entier")
     .positive("animalId invalide"),
 });
