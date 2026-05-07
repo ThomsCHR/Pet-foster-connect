@@ -1,34 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { apiFetch } from "../../lib/api";
+import type { Animal } from "../../types";
+import { ANIMAL_STATUS_LABELS } from "../../constants";
 import "../../assets/styles/animaux.css";
-
-type AnimalStatus = "a_placer" | "placement_en_cours" | "adopte" | "place";
-
-interface Image {
-  id: number;
-  url: string;
-  thumb: string;
-}
-
-interface Association {
-  id: number;
-  name: string;
-}
-
-interface Animal {
-  id: number;
-  name: string;
-  species: string;
-  breed: string | null;
-  gender: string;
-  dateOfBirth: string | null;
-  description: string;
-  status: AnimalStatus;
-  associationId: number;
-  association: Association | null;
-  images: Image[];
-}
 
 const FILTRES_ESPECE = ["Tous", "Chien", "Chat"];
 const FILTRES_STATUT: { label: string; value: string }[] = [
@@ -38,13 +13,6 @@ const FILTRES_STATUT: { label: string; value: string }[] = [
   { label: "Placé", value: "place" },
   { label: "Adopté", value: "adopte" },
 ];
-
-const STATUT_LABELS: Record<AnimalStatus, string> = {
-  a_placer: "À placer",
-  placement_en_cours: "Placement en cours",
-  place: "Placé",
-  adopte: "Adopté",
-};
 
 function AnimauxPage() {
   const [animaux, setAnimaux] = useState<Animal[]>([]);
@@ -151,7 +119,7 @@ function AnimauxPage() {
                 />
                 {/* Badge statut */}
                 <span className={`animal-statut ${animal.status === "a_placer" ? "statut-dispo" : "statut-accueil"}`}>
-                  {STATUT_LABELS[animal.status]}
+                  {ANIMAL_STATUS_LABELS[animal.status]}
                 </span>
               </div>
 

@@ -2,123 +2,21 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { apiFetch } from "../../lib/api";
 import { useAuth } from "../../contexts/AuthContext";
+import type { Volunteer, VolunteerOffer } from "../../types";
+import { REGIONS, OFFER_STATUS_LABELS, OFFER_STATUS_CLASS, ANIMAL_STATUS_LABELS, ANIMAL_STATUS_CLASS, getRegionLabel } from "../../constants";
 import "../../assets/styles/profil.css";
 
-// ── Types ──────────────────────────────────────────────────────────────────
-
-type OfferStatus = "soumise" | "acceptee" | "refusee" | "annulee";
-
-type OfferData = {
-  volunteerId: number;
-  animalId: number;
-  status: OfferStatus;
-  animal: {
-    id: number;
-    name: string;
-    species: string;
-    breed: string | null;
-    images: { id: number; url: string; thumb: string }[];
-    association: { id: number; name: string };
-  };
-};
-
-type ImageData = {
-  id: number;
-  url: string;
-  thumb: string;
-};
-
-type AnimalData = {
-  id: number;
-  name: string;
-  species: string;
-  breed: string | null;
-  gender: string;
-  status: string;
-  images: ImageData[];
-  association: {
-    id: number;
-    name: string;
-  };
-};
-
-type VolunteerData = {
-  id: number;
-  firstname: string;
-  lastname: string;
-  capacity: string;
-  user: {
-    id: number;
-    email: string;
-    phone: string;
-    address: string;
-    region: string | null;
-    description: string | null;
-  };
-  animal: AnimalData[];
-};
-
-// ── Constantes ─────────────────────────────────────────────────────────────
-
-const REGIONS = [
-  { value: "Auvergne_Rhone_Alpes",     label: "Auvergne-Rhône-Alpes" },
-  { value: "Bourgogne_Franche_Comte",  label: "Bourgogne-Franche-Comté" },
-  { value: "Bretagne",                 label: "Bretagne" },
-  { value: "Centre_Val_de_Loire",      label: "Centre-Val de Loire" },
-  { value: "Corse",                    label: "Corse" },
-  { value: "Grand_Est",                label: "Grand Est" },
-  { value: "Hauts_de_France",          label: "Hauts-de-France" },
-  { value: "Ile_de_France",            label: "Île-de-France" },
-  { value: "Normandie",                label: "Normandie" },
-  { value: "Nouvelle_Aquitaine",       label: "Nouvelle-Aquitaine" },
-  { value: "Occitanie",                label: "Occitanie" },
-  { value: "Pays_de_la_Loire",         label: "Pays de la Loire" },
-  { value: "Provence_Alpes_Cote_Azur", label: "Provence-Alpes-Côte d'Azur" },
-  { value: "Guadeloupe",               label: "Guadeloupe" },
-  { value: "Martinique",               label: "Martinique" },
-  { value: "Guyane",                   label: "Guyane" },
-  { value: "La_Reunion",               label: "La Réunion" },
-  { value: "Mayotte",                  label: "Mayotte" },
-];
-
-const OFFER_STATUS_LABELS: Record<OfferStatus, string> = {
-  soumise:  "En attente",
-  acceptee: "Acceptée",
-  refusee:  "Refusée",
-  annulee:  "Annulée",
-};
-
-const OFFER_STATUS_CLASS: Record<OfferStatus, string> = {
-  soumise:  "offre-statut-soumise",
-  acceptee: "offre-statut-acceptee",
-  refusee:  "offre-statut-refusee",
-  annulee:  "offre-statut-annulee",
-};
+// L'API bénévole retourne toujours `animal`, contrairement au type générique
+type VolunteerWithAnimals = Volunteer & { animal: NonNullable<Volunteer["animal"]> };
 
 // ── Fonctions utilitaires ──────────────────────────────────────────────────
 
-function getRegionLabel(regionValue: string | null): string {
-  if (regionValue === null) return "—";
-  for (let i = 0; i < REGIONS.length; i++) {
-    if (REGIONS[i].value === regionValue) return REGIONS[i].label;
-  }
-  return regionValue;
-}
-
 function getStatusLabel(status: string): string {
-  if (status === "a_placer")           return "À placer";
-  if (status === "placement_en_cours") return "Placement en cours";
-  if (status === "place")              return "Placé";
-  if (status === "adopte")             return "Adopté";
-  return status;
+  return ANIMAL_STATUS_LABELS[status as keyof typeof ANIMAL_STATUS_LABELS] ?? status;
 }
 
 function getStatusClass(status: string): string {
-  if (status === "a_placer")           return "statut-a-placer";
-  if (status === "placement_en_cours") return "statut-placement";
-  if (status === "place")              return "statut-place";
-  if (status === "adopte")             return "statut-adopte";
-  return "";
+  return ANIMAL_STATUS_CLASS[status as keyof typeof ANIMAL_STATUS_CLASS] ?? "";
 }
 
 // ── Composant ──────────────────────────────────────────────────────────────
@@ -129,7 +27,7 @@ function VolunteerPage() {
   const navigate = useNavigate();
 
   // Données chargées depuis l'API
-  const [volunteer, setVolunteer] = useState<VolunteerData | null>(null);
+  const [volunteer, setVolunteer] = useState<VolunteerWithAnimals | null>(null);
   const [loading, setLoading]     = useState(true);
   const [notFound, setNotFound]   = useState(false);
 
@@ -149,7 +47,7 @@ function VolunteerPage() {
   const [description, setDescription]   = useState("");
 
   // Demandes d'accueil du bénévole
-  const [offers, setOffers]             = useState<OfferData[]>([]);
+  const [offers, setOffers]             = useState<VolunteerOffer[]>([]);
   const [offersLoading, setOffersLoading] = useState(false);
   const [offerAction, setOfferAction]   = useState(false);
 
@@ -187,17 +85,20 @@ function VolunteerPage() {
 
     if (!estProprietaire) return;
 
-    setOffersLoading(true);
+    async function chargerOffres() {
+      setOffersLoading(true);
+      try {
+        const res = await apiFetch("/api/offers/volunteer/" + id);
+        const json = await res.json();
+        if (json.data) setOffers(json.data);
+      } catch (err) {
+        console.error("Erreur lors du chargement des demandes :", err);
+      } finally {
+        setOffersLoading(false);
+      }
+    }
 
-    apiFetch("/api/offers/volunteer/" + id)
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.data) {
-          setOffers(json.data);
-        }
-      })
-      .catch((err) => console.error("Erreur lors du chargement des demandes :", err))
-      .finally(() => setOffersLoading(false));
+    chargerOffres();
   }, [id, connectedUser]);
 
   // Ouvre le formulaire en pré-remplissant les champs
@@ -327,7 +228,7 @@ function VolunteerPage() {
 
             <div className="profil-card-header-info">
               <h1 className="profil-nom">{volunteer.firstname} {volunteer.lastname}</h1>
-              <p className="profil-role">Bénévole · {getRegionLabel(volunteer.user.region)}</p>
+              <p className="profil-role">Bénévole · {getRegionLabel(volunteer.user.region, "—")}</p>
             </div>
 
             {estProprietaire() && editing === false && (
@@ -363,7 +264,7 @@ function VolunteerPage() {
 
               <div className="profil-info-group">
                 <span className="profil-info-label">Région</span>
-                <span className="profil-info-value">{getRegionLabel(volunteer.user.region)}</span>
+                <span className="profil-info-value">{getRegionLabel(volunteer.user.region, "—")}</span>
               </div>
 
               <div className="profil-info-group full">
@@ -491,7 +392,7 @@ function VolunteerPage() {
                     <div className="profil-animal-infos">
                       <p className="profil-animal-nom">{emoji} {animal.name}</p>
                       <p className="profil-animal-meta">{raceOuEspece} · {animal.gender}</p>
-                      <p className="profil-animal-meta">{animal.association.name}</p>
+                      <p className="profil-animal-meta">{animal.association?.name}</p>
                     </div>
                   </Link>
                 );
