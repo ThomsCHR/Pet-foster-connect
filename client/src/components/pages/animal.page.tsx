@@ -1,32 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { apiFetch } from "../../lib/api";
+import type { Animal, OfferStatus } from "../../types";
+import { ANIMAL_STATUS_LABELS, ANIMAL_STATUS_CLASS, getRegionLabel } from "../../constants";
 import "../../assets/styles/animal.detail.css";
 
-type AnimalStatus = "a_placer" | "placement_en_cours" | "place" | "adopte";
-type OfferStatus = "soumise" | "acceptee" | "refusee" | "annulee";
-
-const STATUS_LABELS: Record<AnimalStatus, string> = {
-  a_placer: "À placer",
-  placement_en_cours: "Placement en cours",
-  place: "Placé",
-  adopte: "Adopté",
-};
-
-const STATUS_CLASS: Record<AnimalStatus, string> = {
-  a_placer: "statut-a-placer",
-  placement_en_cours: "statut-placement-en-cours",
-  place: "statut-place",
-  adopte: "statut-adopte",
-};
-
-const REGION_LABELS: Record<string, string> = {
-  Auvergne_Rhone_Alpes: "Auvergne-Rhône-Alpes",
-  Provence_Alpes_Cote_Azur: "Provence-Alpes-Côte d'Azur",
-  Ile_de_France: "Île-de-France",
-  Nouvelle_Aquitaine: "Nouvelle-Aquitaine",
-  Occitanie: "Occitanie",
-  Pays_de_la_Loire: "Pays de la Loire",
+// Ces props sont passées depuis App.tsx
+type Props = {
+  isLogged: boolean;
+  connectedUser: { volunteer?: { id: number } | null } | null;
 };
 
 function calculerAge(dateNaissance: string): string {
@@ -39,37 +21,6 @@ function calculerAge(dateNaissance: string): string {
   const ans = Math.floor(mois / 12);
   return `${ans} an${ans > 1 ? "s" : ""}`;
 }
-
-interface Image {
-  id: number;
-  url: string;
-  thumb: string;
-}
-
-interface Animal {
-  id: number;
-  name: string;
-  species: string;
-  breed: string | null;
-  gender: string;
-  dateOfBirth: string | null;
-  description: string;
-  status: AnimalStatus;
-  images: Image[];
-  association: {
-    id: number;
-    name: string;
-    user: {
-      region: string;
-    };
-  };
-}
-
-// Ces props sont passées depuis App.tsx
-type Props = {
-  isLogged: boolean;
-  connectedUser: { volunteer?: { id: number } | null } | null;
-};
 
 function AnimalDetailPage({ isLogged, connectedUser }: Props) {
   const { id } = useParams();
@@ -110,24 +61,25 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
   useEffect(() => {
     if (!isVolunteer || !volunteerId) return;
 
-    setOfferLoading(true);
-
-    apiFetch(`/api/offers/volunteer/${volunteerId}`)
-      .then((res) => res.json())
-      .then((json) => {
+    async function verifierOffre() {
+      setOfferLoading(true);
+      try {
+        const res = await apiFetch(`/api/offers/volunteer/${volunteerId}`);
+        const json = await res.json();
         if (!json.data) return;
 
-        // Chercher une offre existante pour cet animal
         const offreExistante = json.data.find(
           (o: { animalId: number; status: OfferStatus }) => o.animalId === Number(id)
         );
+        if (offreExistante) setOfferStatus(offreExistante.status);
+      } catch (err) {
+        console.error("Erreur lors de la vérification de la demande :", err);
+      } finally {
+        setOfferLoading(false);
+      }
+    }
 
-        if (offreExistante) {
-          setOfferStatus(offreExistante.status);
-        }
-      })
-      .catch((err) => console.error("Erreur lors de la vérification de la demande :", err))
-      .finally(() => setOfferLoading(false));
+    verifierOffre();
   }, [isVolunteer, volunteerId, id]);
 
   // Soumet une demande d'accueil pour cet animal
@@ -286,8 +238,8 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
             alt={animal.name}
             className="animal-gallery-main"
           />
-          <span className={`animal-gallery-statut ${STATUS_CLASS[animal.status]}`}>
-            {STATUS_LABELS[animal.status]}
+          <span className={`animal-gallery-statut ${ANIMAL_STATUS_CLASS[animal.status]}`}>
+            {ANIMAL_STATUS_LABELS[animal.status]}
           </span>
         </div>
 
@@ -336,7 +288,7 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
                 <p className="animal-asso-nom">{animal.association.name}</p>
                 {animal.association.user && (
                   <p className="animal-asso-region">
-                    📍 {REGION_LABELS[animal.association.user.region] ?? animal.association.user.region}
+                    📍 {getRegionLabel(animal.association.user.region)}
                   </p>
                 )}
               </div>

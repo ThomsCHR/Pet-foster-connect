@@ -35,7 +35,7 @@ function RegisterPage() {
 
   // Quel type de compte ?
   const [type, setType] = useState<TypeCompte>("benevole");
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
 
   // ── Champs communs (model Users) ──
   const [email, setEmail]           = useState("");
@@ -57,7 +57,7 @@ function RegisterPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
+    setErrors([]);
 
     const body = {
       type,
@@ -78,13 +78,18 @@ function RegisterPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setError(data.error ?? "Erreur lors de l'inscription");
+        if (data.details) {
+          const messages = Object.values(data.details as Record<string, string[]>).flat();
+          setErrors(messages.length > 0 ? messages : [data.error ?? "Erreur lors de l'inscription"]);
+        } else {
+          setErrors([data.error ?? "Erreur lors de l'inscription"]);
+        }
         return;
       }
       await refreshUser();
       navigate("/");
     } catch {
-      setError("Erreur réseau, veuillez réessayer");
+      setErrors(["Erreur réseau, veuillez réessayer"]);
     }
   }
 
@@ -95,7 +100,11 @@ function RegisterPage() {
         <h1 className="register-title">Créer un compte</h1>
         <p className="register-subtitle">Rejoignez la communauté Pet Foster Connect</p>
 
-        {error && <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
+        {errors.length > 0 && (
+          <ul style={{ color: "red", marginBottom: "1rem", paddingLeft: "1.2rem" }}>
+            {errors.map((msg, i) => <li key={i}>{msg}</li>)}
+          </ul>
+        )}
 
         {/* ===== CHOIX DU TYPE ===== */}
         <div className="register-type-choix">

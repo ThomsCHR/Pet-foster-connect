@@ -2,138 +2,17 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { apiFetch, API_BASE } from "../../lib/api";
 import { useAuth } from "../../contexts/AuthContext";
+import type { Animal, Association, AssociationOffer, OfferStatus, Image } from "../../types";
+import { REGIONS, OFFER_STATUS_LABELS, OFFER_STATUS_CLASS, ANIMAL_STATUS_LABELS, getRegionLabel } from "../../constants";
 import "../../assets/styles/association.detail.css";
 
-// ── Types ──────────────────────────────────────────────────────────────────
-
-type OfferStatus = "soumise" | "acceptee" | "refusee" | "annulee";
-
-type AssociationOffer = {
-  volunteerId: number;
-  animalId: number;
-  status: OfferStatus;
-  animal: {
-    id: number;
-    name: string;
-    species: string;
-    images: { id: number; url: string; thumb: string }[];
-  };
-  volunteer: {
-    id: number;
-    firstname: string;
-    lastname: string;
-    capacity: string;
-    user: {
-      email: string;
-      phone: string;
-      region: string | null;
-    };
-  };
-};
-
-type AnimalImage = {
-  id: number;
-  url: string;
-  thumb: string;
-};
-
-type Animal = {
-  id: number;
-  name: string;
-  species: string;
-  breed: string | null;
-  gender: string;
-  dateOfBirth: string | null;
-  description: string;
-  status: string;
-  images: AnimalImage[];
-};
-
-type Association = {
-  id: number;
-  name: string;
-  user: {
-    email: string;
-    phone: string;
-    address: string;
-    region: string | null;
-    description: string | null;
-  };
-  animals: Animal[];
-};
-
-// ── Constantes ─────────────────────────────────────────────────────────────
-
-const REGION_LABELS: Record<string, string> = {
-  Auvergne_Rhone_Alpes:    "Auvergne-Rhône-Alpes",
-  Bourgogne_Franche_Comte: "Bourgogne-Franche-Comté",
-  Bretagne:                "Bretagne",
-  Centre_Val_de_Loire:     "Centre-Val de Loire",
-  Corse:                   "Corse",
-  Grand_Est:               "Grand Est",
-  Hauts_de_France:         "Hauts-de-France",
-  Ile_de_France:           "Île-de-France",
-  Normandie:               "Normandie",
-  Nouvelle_Aquitaine:      "Nouvelle-Aquitaine",
-  Occitanie:               "Occitanie",
-  Pays_de_la_Loire:        "Pays de la Loire",
-  Provence_Alpes_Cote_Azur:"Provence-Alpes-Côte d'Azur",
-  Guadeloupe:              "Guadeloupe",
-  Martinique:              "Martinique",
-  Guyane:                  "Guyane",
-  La_Reunion:              "La Réunion",
-  Mayotte:                 "Mayotte",
-};
-
-const REGIONS = [
-  { value: "Auvergne_Rhone_Alpes",     label: "Auvergne-Rhône-Alpes" },
-  { value: "Bourgogne_Franche_Comte",  label: "Bourgogne-Franche-Comté" },
-  { value: "Bretagne",                 label: "Bretagne" },
-  { value: "Centre_Val_de_Loire",      label: "Centre-Val de Loire" },
-  { value: "Corse",                    label: "Corse" },
-  { value: "Grand_Est",                label: "Grand Est" },
-  { value: "Hauts_de_France",          label: "Hauts-de-France" },
-  { value: "Ile_de_France",            label: "Île-de-France" },
-  { value: "Normandie",                label: "Normandie" },
-  { value: "Nouvelle_Aquitaine",       label: "Nouvelle-Aquitaine" },
-  { value: "Occitanie",                label: "Occitanie" },
-  { value: "Pays_de_la_Loire",         label: "Pays de la Loire" },
-  { value: "Provence_Alpes_Cote_Azur", label: "Provence-Alpes-Côte d'Azur" },
-  { value: "Guadeloupe",               label: "Guadeloupe" },
-  { value: "Martinique",               label: "Martinique" },
-  { value: "Guyane",                   label: "Guyane" },
-  { value: "La_Reunion",               label: "La Réunion" },
-  { value: "Mayotte",                  label: "Mayotte" },
-];
-
-const OFFER_STATUS_LABELS: Record<OfferStatus, string> = {
-  soumise:  "En attente",
-  acceptee: "Acceptée",
-  refusee:  "Refusée",
-  annulee:  "Annulée",
-};
-
-const OFFER_STATUS_CLASS: Record<OfferStatus, string> = {
-  soumise:  "offre-statut-soumise",
-  acceptee: "offre-statut-acceptee",
-  refusee:  "offre-statut-refusee",
-  annulee:  "offre-statut-annulee",
-};
+// L'API de détail retourne toujours `animals`, contrairement à la liste
+type AssociationDetail = Association & { animals: Animal[] };
 
 // ── Fonctions utilitaires ──────────────────────────────────────────────────
 
-function getRegionLabel(regionValue: string | null): string {
-  if (regionValue === null) return "France";
-  if (REGION_LABELS[regionValue]) return REGION_LABELS[regionValue];
-  return regionValue;
-}
-
 function getStatusLabel(status: string): string {
-  if (status === "a_placer")           return "À placer";
-  if (status === "placement_en_cours") return "Placement en cours";
-  if (status === "place")              return "Placé";
-  if (status === "adopte")             return "Adopté";
-  return status;
+  return ANIMAL_STATUS_LABELS[status as keyof typeof ANIMAL_STATUS_LABELS] ?? status;
 }
 
 // Props gardées pour compatibilité avec App.tsx
@@ -142,12 +21,12 @@ type Props = {
   connectedUser: unknown;
 };
 
-function AssociationDetailPage(_props: Props) {
+function AssociationDetailPage({}: Props) {
   const { id } = useParams();
   const { connectedUser, logout } = useAuth();
   const navigate = useNavigate();
 
-  const [association, setAssociation] = useState<Association | null>(null);
+  const [association, setAssociation] = useState<AssociationDetail | null>(null);
   const [loading, setLoading]         = useState(true);
   const [notFound, setNotFound]       = useState(false);
 
@@ -211,7 +90,7 @@ function AssociationDetailPage(_props: Props) {
 
   // Si c'est l'association propriétaire, on charge les demandes reçues
   useEffect(() => {
-    if (!estAssociationProprietaire()) return;
+    if (!connectedUser?.association || connectedUser.association.id !== Number(id)) return;
 
     setDemandesLoading(true);
 
@@ -399,7 +278,7 @@ function AssociationDetailPage(_props: Props) {
           : prev
       );
       setEditing(false);
-    } catch (err) {
+    } catch {
       setEditError("Erreur réseau, veuillez réessayer");
     }
 
@@ -489,7 +368,7 @@ function AssociationDetailPage(_props: Props) {
         prev ? { ...prev, animals: [...prev.animals, nouvelAnimal] } : prev
       );
       annulerForm();
-    } catch (err) {
+    } catch {
       setFormErreur("Erreur réseau, veuillez réessayer");
     }
 
@@ -524,7 +403,7 @@ function AssociationDetailPage(_props: Props) {
       }
 
       const json = await reponse.json();
-      let newImages: AnimalImage[] = association?.animals.find((a) => a.id === editAnimalId)?.images ?? [];
+      let newImages: Image[] = association?.animals.find((a) => a.id === editAnimalId)?.images ?? [];
 
       for (const file of formImages) {
         const fd = new FormData();
@@ -550,7 +429,7 @@ function AssociationDetailPage(_props: Props) {
         };
       });
       annulerForm();
-    } catch (err) {
+    } catch {
       setFormErreur("Erreur réseau, veuillez réessayer");
     }
 

@@ -1,48 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiFetch } from "../../lib/api";
+import type { Association } from "../../types";
+import { getRegionLabel } from "../../constants";
 import "../../assets/styles/associations.css";
-
-const REGION_LABELS: Record<string, string> = {
-  Auvergne_Rhone_Alpes:    "Auvergne-Rhône-Alpes",
-  Bourgogne_Franche_Comte: "Bourgogne-Franche-Comté",
-  Bretagne:                "Bretagne",
-  Centre_Val_de_Loire:     "Centre-Val de Loire",
-  Corse:                   "Corse",
-  Grand_Est:               "Grand Est",
-  Hauts_de_France:         "Hauts-de-France",
-  Ile_de_France:           "Île-de-France",
-  Normandie:               "Normandie",
-  Nouvelle_Aquitaine:      "Nouvelle-Aquitaine",
-  Occitanie:               "Occitanie",
-  Pays_de_la_Loire:        "Pays de la Loire",
-  Provence_Alpes_Cote_Azur:"Provence-Alpes-Côte d'Azur",
-  Guadeloupe:              "Guadeloupe",
-  Martinique:              "Martinique",
-  Guyane:                  "Guyane",
-  La_Reunion:              "La Réunion",
-  Mayotte:                 "Mayotte",
-};
-
-function getRegionLabel(regionValue: string | null): string {
-  if (regionValue === null) return "France";
-  if (REGION_LABELS[regionValue]) return REGION_LABELS[regionValue];
-  return regionValue;
-}
-
-type Association = {
-  id: number;
-  name: string;
-  user: {
-    email: string;
-    phone: string;
-    region: string | null;
-    description: string | null;
-  };
-  _count: {
-    animals: number;
-  };
-};
 
 function AssociationsPage() {
   const [associations, setAssociations] = useState<Association[]>([]);
@@ -153,7 +114,7 @@ function AssociationsPage() {
                 </p>
 
                 <div className="asso-stats">
-                  <span className="asso-stat">🐾 {asso._count.animals} animaux</span>
+                  <span className="asso-stat">🐾 {asso._count?.animals ?? 0} animaux</span>
                 </div>
 
                 <div className="asso-footer">

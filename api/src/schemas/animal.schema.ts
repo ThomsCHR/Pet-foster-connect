@@ -2,11 +2,11 @@ import { z } from "zod";
 import { animalStatusEnum } from "./shared.schema";
 
 export const createAnimalSchema = z.object({
-  name: z.string().min(1, "Nom requis"),
-  species: z.string().min(1, "Espèce requise"),
-  breed: z.string().nullable().optional(),
-  gender: z.string().min(1, "Genre requis"),
-  description: z.string().min(1, "Description requise"),
+  name: z.string().trim().min(1, "Nom requis"),
+  species: z.string().trim().min(1, "Espèce requise"),
+  breed: z.string().trim().nullable().optional(),
+  gender: z.string().trim().min(1, "Genre requis"),
+  description: z.string().trim().min(1, "Description requise"),
   status: animalStatusEnum.default("a_placer"),
   dateOfBirth: z.coerce.date().optional().nullable(),
 });

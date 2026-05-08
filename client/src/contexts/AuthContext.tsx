@@ -1,17 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { apiFetch } from "../lib/api";
+import type { ConnectedUser } from "../types";
 
-export type ConnectedUser = {
-  id: number;
-  email: string;
-  phone: string;
-  address: string;
-  region?: string | null;
-  description?: string | null;
-  image?: string | null;
-  volunteer?: { id: number; firstname: string; lastname: string; capacity: string } | null;
-  association?: { id: number; name: string; siret: string } | null;
-};
+export type { ConnectedUser };
 
 type AuthContextType = {
   connectedUser: ConnectedUser | null;
