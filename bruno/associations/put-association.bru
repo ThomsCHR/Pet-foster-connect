@@ -1,0 +1,22 @@
+meta {
+  name: PUT /api/associations/:id
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/associations/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Les Amis des Bêtes",
+    "email": "nouveau@asso.fr",
+    "phone": "0698765432",
+    "address": "10 rue de la Liberté, Lyon",
+    "region": "Auvergne_Rhone_Alpes",
+    "description": "Association de protection animale mise à jour"
+  }
+}

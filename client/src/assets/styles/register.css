@@ -1,7 +1,3 @@
-/* =============================================
-   PAGE INSCRIPTION — register.css
-   Mobile first
-============================================= */
 
 .register-page {
   background: #FAFAFA;
@@ -195,7 +191,7 @@
 }
 
 .register-login-link a {
-  color: #1D9E75;
+  color: #0F6E56;
   font-weight: 600;
   text-decoration: none;
 }

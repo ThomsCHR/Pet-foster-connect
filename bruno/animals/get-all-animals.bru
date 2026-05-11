@@ -1,0 +1,15 @@
+meta {
+  name: GET /api/animals
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/animals
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  baseUrl:  http://localhost:3003
+}

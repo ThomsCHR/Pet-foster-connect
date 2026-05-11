@@ -1,8 +1,4 @@
-/* =============================================
-   NAVBAR — navbar.css
-   Layout desktop : logo | liens (centre) | boutons
-   Layout mobile  : logo | burger → menu déroulant
-============================================= */
+
 
 
 /* ===== SPACER ===== */
@@ -76,7 +72,7 @@
 }
 
 .nav-brand-name span {
-  color: #1D9E75;
+  color: #0F6E56;
 }
 
 

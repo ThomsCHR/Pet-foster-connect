@@ -1,0 +1,17 @@
+meta {
+  name: PATCH /api/offers/:volunteerId/:animalId
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/api/offers/1/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "status": "acceptee"
+  }
+}

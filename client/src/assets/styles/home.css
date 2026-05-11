@@ -1,14 +1,4 @@
-/* =============================================
-   PAGE D'ACCUEIL - home.css
-   Mobile first : styles de base = mobile
-   Desktop : ajustements dans @media (min-width: 640px)
-   Couleurs principales :
-   - Vert foncé  : #0F6E56
-   - Vert moyen  : #1D9E75
-   - Vert clair  : #E1F5EE
-   - Gris texte  : #444
-   - Fond page   : #FAFAFA
-============================================= */
+
 
 /* ========== FOND GÉNÉRAL ========== */
 .home-page {
@@ -122,7 +112,7 @@
 .stat-number {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #1D9E75;
+  color: #0F6E56;
 }
 
 .stat-label {

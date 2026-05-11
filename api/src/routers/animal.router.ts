@@ -12,17 +12,18 @@ animalRouter.get("/", getAnimals);
 // creer un animal (association connectée uniquement)
 animalRouter.post("/", requireAuth, validate(createAnimalSchema), createAnimal);
 
+// recuperer les animaux par association
+animalRouter.get("/association/:associationId", getAnimalsByAssociation);
+
 // recuperer un animal par son ID
 animalRouter.get("/:id", getAnimalById);
 
 // mettre à jour un animal (association propriétaire uniquement)
 animalRouter.put("/:id", requireAuth, validate(updateAnimalSchema), updateAnimal);
 
-// recuperer les animaux par association
-animalRouter.get("/association/:associationId", getAnimalsByAssociation);
-
 // supprimer un animal (association propriétaire uniquement)
 animalRouter.delete("/:id", requireAuth, deleteAnimal);
+
 
 
 

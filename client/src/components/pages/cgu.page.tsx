@@ -9,7 +9,7 @@ function CguPage() {
         <Link to="/" className="cgu-retour">← Retour à l'accueil</Link>
 
         <h1 className="cgu-titre">Conditions Générales d'Utilisation</h1>
-        <p className="cgu-date">Dernière mise à jour : mai 2025</p>
+        <p className="cgu-date">Dernière mise à jour : mai 2026</p>
 
         <section className="cgu-section">
           <h2>1. Présentation du service</h2>
