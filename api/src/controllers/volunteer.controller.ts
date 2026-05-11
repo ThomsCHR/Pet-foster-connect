@@ -67,3 +67,18 @@ export const updateVolunteer = async (req: Request, res: Response, next: NextFun
     next(error);
   }
 };
+
+export const deleteVolunteer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const volunteerId = Number(req.params.id);
+
+    const volunteer = await prisma.volunteer.findUnique({ where: { id: volunteerId } });
+    if (!volunteer) throw new AppError(404, "Bénévole introuvable");
+    if (volunteer.userId !== req.user!.id) throw new AppError(403);
+
+    await prisma.users.delete({ where: { id: volunteer.userId } });
+    res.status(200).json({ message: "Compte supprimé" });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,0 +1,23 @@
+meta {
+  name: POST /api/animals
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/animals
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Milo",
+    "species": "chien",
+    "breed": "Labrador",
+    "gender": "male",
+    "description": "Chien joueur et affectueux",
+    "status": "a_placer",
+    "dateOfBirth": "2021-06-15"
+  }
+}

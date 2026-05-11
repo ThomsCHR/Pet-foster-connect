@@ -46,6 +46,13 @@ function VolunteerPage() {
   const [region, setRegion]             = useState("");
   const [description, setDescription]   = useState("");
 
+  // Photo de profil
+  const [avatarFile, setAvatarFile]     = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string>("");
+
+  // Suppression de compte
+  const [deleting, setDeleting]         = useState(false);
+
   // Demandes d'accueil du bénévole
   const [offers, setOffers]             = useState<VolunteerOffer[]>([]);
   const [offersLoading, setOffersLoading] = useState(false);
@@ -113,6 +120,8 @@ function VolunteerPage() {
     setDescription(volunteer.user.description || "");
     setRegion(volunteer.user.region || "");
     setFormError("");
+    setAvatarFile(null);
+    setAvatarPreview("");
     setEditing(true);
   }
 
@@ -124,6 +133,30 @@ function VolunteerPage() {
   function annulerEdition() {
     setEditing(false);
     setFormError("");
+    setAvatarFile(null);
+    setAvatarPreview("");
+  }
+
+  function choisirAvatar(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  }
+
+  async function supprimerCompte() {
+    if (!window.confirm("Supprimer définitivement votre compte ? Cette action est irréversible.")) return;
+    setDeleting(true);
+    try {
+      const reponse = await apiFetch("/api/volunteers/" + id, { method: "DELETE" });
+      if (reponse.ok) {
+        await logout();
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Erreur lors de la suppression :", err);
+    }
+    setDeleting(false);
   }
 
   // Envoie les modifications à l'API
@@ -148,8 +181,24 @@ function VolunteerPage() {
       }
 
       const volunteerMisAJour = await reponse.json();
+
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append("image", avatarFile);
+        const avatarReponse = await apiFetch("/api/volunteers/" + id + "/avatar", {
+          method: "POST",
+          body: formData,
+        });
+        if (avatarReponse.ok) {
+          const { url } = await avatarReponse.json();
+          volunteerMisAJour.user.image = url;
+        }
+      }
+
       setVolunteer(volunteerMisAJour);
       await refreshUser();
+      setAvatarFile(null);
+      setAvatarPreview("");
       setEditing(false);
     } catch (erreur) {
       console.error("Erreur lors de la sauvegarde :", erreur);
@@ -224,7 +273,11 @@ function VolunteerPage() {
         <div className="profil-card">
 
           <div className="profil-card-header">
-            <div className="profil-avatar">{initiales}</div>
+            <div className="profil-avatar">
+              {volunteer.user.image
+                ? <img src={volunteer.user.image} alt="avatar" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
+                : initiales}
+            </div>
 
             <div className="profil-card-header-info">
               <h1 className="profil-nom">{volunteer.firstname} {volunteer.lastname}</h1>
@@ -232,7 +285,7 @@ function VolunteerPage() {
             </div>
 
             {estProprietaire() && editing === false && (
-              <div style={{ display: "flex", gap: "10px" }}>
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                 <button className="profil-btn-edit" onClick={ouvrirEdition}>
                   Modifier mon profil
                 </button>
@@ -342,12 +395,34 @@ function VolunteerPage() {
                 />
               </div>
 
+              <div className="profil-form-group full">
+                <label className="profil-form-label">
+                  Photo de profil <span style={{ fontWeight: 400, color: "#9ca3af" }}>(optionnel)</span>
+                </label>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                  {(avatarPreview || volunteer.user.image) && (
+                    <img
+                      src={avatarPreview || volunteer.user.image!}
+                      alt="aperçu"
+                      style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", border: "2px solid #e5e7eb" }}
+                    />
+                  )}
+                  <input type="file" accept="image/jpeg,image/png,image/webp" onChange={choisirAvatar} />
+                </div>
+              </div>
+
               <div className="profil-form-actions">
                 <button type="button" className="profil-btn-cancel" onClick={annulerEdition}>
                   Annuler
                 </button>
                 <button type="submit" className="profil-btn-save" disabled={saving}>
                   {saving ? "Enregistrement..." : "Enregistrer"}
+                </button>
+              </div>
+
+              <div style={{ borderTop: "1px solid #f3f4f6", paddingTop: "20px", marginTop: "8px" }}>
+                <button type="button" className="profil-btn-delete" onClick={supprimerCompte} disabled={deleting}>
+                  {deleting ? "Suppression..." : "Supprimer mon compte"}
                 </button>
               </div>
 
@@ -364,7 +439,7 @@ function VolunteerPage() {
           {volunteer.animal.length === 0 && (
             <div className="profil-animaux-empty">
               <span>🐾</span>
-              Vous n'accueillez aucun animal pour le moment.
+              Aucun animal pour le moment.
             </div>
           )}
 

@@ -1,4 +1,4 @@
-/* ===== PAGE PROFIL BÉNÉVOLE ===== */
+
 
 .profil-page {
   min-height: 100vh;
@@ -96,6 +96,26 @@
 
 .profil-btn-logout:hover {
   background: rgba(239,68,68,0.45);
+}
+
+.profil-btn-delete {
+  background: transparent;
+  border: 1.5px solid #fca5a5;
+  color: #ef4444;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.profil-btn-delete:hover {
+  background: #fef2f2;
+}
+
+.profil-btn-delete:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* ===== INFOS (mode view) ===== */

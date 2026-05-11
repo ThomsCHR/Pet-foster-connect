@@ -1,0 +1,15 @@
+meta {
+  name: POST /api/volunteers/:id/avatar
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/volunteers/1/avatar
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  image: @file()
+}

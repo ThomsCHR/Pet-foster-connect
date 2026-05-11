@@ -1,7 +1,3 @@
-/* =============================================
-   PAGE DÉTAIL ASSOCIATION — association.detail.css
-   Mobile first
-============================================= */
 
 .detail-page {
   background: #FAFAFA;
@@ -730,6 +726,19 @@
   font-weight: 700;
   color: #111;
   margin: 0 0 4px;
+}
+
+.detail-demande-benevole-link {
+  font-size: 15px;
+  font-weight: 700;
+  color: #6366f1;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.detail-demande-benevole-link:hover {
+  text-decoration: underline;
 }
 
 .detail-demande-meta {

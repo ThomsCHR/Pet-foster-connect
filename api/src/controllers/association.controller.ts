@@ -92,8 +92,14 @@ export const updateAssociation = async (req: Request, res: Response, next: NextF
 
 export const deleteAssociation = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await prisma.association.delete({ where: { id: Number(req.params.id) } });
-    res.json({ message: "Association supprimée" });
+    if (req.user?.role !== "association") throw new AppError(403, "Réservé aux associations");
+
+    const assoc = await prisma.association.findUnique({ where: { id: Number(req.params.id) } });
+    if (!assoc) throw new AppError(404, "Association introuvable");
+    if (assoc.userId !== req.user.id) throw new AppError(403);
+
+    await prisma.users.delete({ where: { id: assoc.userId } });
+    res.status(200).json({ message: "Compte supprimé" });
   } catch (error) {
     next(error);
   }

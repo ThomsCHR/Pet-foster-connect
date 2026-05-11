@@ -1,0 +1,23 @@
+meta {
+  name: POST /api/associations
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/associations
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Les Amis des Bêtes",
+    "siret": "12345678901234",
+    "email": "contact@asso.fr",
+    "phone": "0612345678",
+    "address": "5 avenue de la Paix, Lyon",
+    "region": "Auvergne_Rhone_Alpes",
+    "description": "Association de protection animale"
+  }
+}

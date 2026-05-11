@@ -1,0 +1,15 @@
+meta {
+  name: POST /api/associations/:id/cover
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/associations/1/cover
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  image: @file()
+}

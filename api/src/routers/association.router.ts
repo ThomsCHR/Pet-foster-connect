@@ -24,8 +24,8 @@ associationRouter.put("/:id", requireAuth, validate(updateAssociationSchema), up
 // uploader la photo de couverture d'une association
 associationRouter.post("/:id/cover", requireAuth, upload.single("image"), uploadAssociationCover);
 
-// supprimer une association
-associationRouter.delete("/:id", deleteAssociation);
+// supprimer une association (propriétaire uniquement)
+associationRouter.delete("/:id", requireAuth, deleteAssociation);
 
 
 export default associationRouter;

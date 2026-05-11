@@ -4,7 +4,7 @@ import { apiFetch } from "../../lib/api";
 import { useAuth } from "../../contexts/AuthContext";
 import "../../assets/styles/register.css";
 
-// Valeurs de l'enum Region (Prisma)
+
 const REGIONS = [
   { value: "Auvergne_Rhone_Alpes",      label: "Auvergne-Rhône-Alpes" },
   { value: "Bourgogne_Franche_Comte",   label: "Bourgogne-Franche-Comté" },
