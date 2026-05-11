@@ -14,12 +14,33 @@ const FILTRES_STATUT: { label: string; value: string }[] = [
   { label: "Adopté", value: "adopte" },
 ];
 
+function getPagesAfficher(page: number, total: number): (number | "...")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const pages: (number | "...")[] = [1];
+  if (page > 3) pages.push("...");
+  for (let i = Math.max(2, page - 1); i <= Math.min(total - 1, page + 1); i++) pages.push(i);
+  if (page < total - 2) pages.push("...");
+  pages.push(total);
+  return pages;
+}
+
 function AnimauxPage() {
   const [animaux, setAnimaux] = useState<Animal[]>([]);
   const [loading, setLoading] = useState(true);
   const [filtreEspece, setFiltreEspece] = useState("Tous");
   const [filtreStatut, setFiltreStatut] = useState("Tous");
   const [recherche, setRecherche] = useState("");
+  const [page, setPage] = useState(1);
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia("(max-width: 639px)").matches);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  useEffect(() => { setPage(1); }, [filtreEspece, filtreStatut, recherche]);
 
   useEffect(() => {
     apiFetch("/api/animals")
@@ -42,6 +63,10 @@ function AnimauxPage() {
       animal.breed?.toLowerCase().includes(recherche.toLowerCase());
     return matchEspece && matchStatut && matchRecherche;
   });
+
+  const itemsParPage = isMobile ? 6 : 9;
+  const totalPages = Math.ceil(animauxFiltres.length / itemsParPage);
+  const animauxPage = animauxFiltres.slice((page - 1) * itemsParPage, page * itemsParPage);
 
   if (loading) return <p>Chargement...</p>;
 
@@ -107,7 +132,7 @@ function AnimauxPage() {
 
         {/* Grille de cartes */}
         <div className="animaux-grille">
-          {animauxFiltres.map((animal) => (
+          {animauxPage.map((animal) => (
             <Link key={animal.id} to={`/animals/${animal.id}`} className="animal-card">
 
               {/* Photo */}
@@ -145,6 +170,41 @@ function AnimauxPage() {
         </div>
 
       </div>
+
+      {/* ===== PAGINATION ===== */}
+      {totalPages > 1 && (
+        <div className="animaux-pagination">
+          <button
+            className="pagination-btn"
+            onClick={() => setPage((p) => p - 1)}
+            disabled={page === 1}
+          >
+            ←
+          </button>
+
+          {getPagesAfficher(page, totalPages).map((p, i) =>
+            p === "..." ? (
+              <span key={`ellipsis-${i}`} className="pagination-ellipsis">…</span>
+            ) : (
+              <button
+                key={p}
+                className={`pagination-btn ${page === p ? "actif" : ""}`}
+                onClick={() => setPage(p)}
+              >
+                {p}
+              </button>
+            )
+          )}
+
+          <button
+            className="pagination-btn"
+            onClick={() => setPage((p) => p + 1)}
+            disabled={page === totalPages}
+          >
+            →
+          </button>
+        </div>
+      )}
 
     </div>
   );

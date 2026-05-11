@@ -40,6 +40,7 @@ export type Association = {
     address: string;
     region: string | null;
     description: string | null;
+    image?: string | null;
   };
   animals?: Animal[];
   _count?: { animals: number };

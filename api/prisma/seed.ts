@@ -71,6 +71,62 @@ async function main() {
                   ]
                 }
               },
+              {
+                name: 'Cannelle',
+                species: 'Chat',
+                breed: 'Siamois',
+                gender: 'Femelle',
+                dateOfBirth: new Date('2022-07-18'),
+                description: 'Chatte curieuse et bavarde, adore jouer et explorer.',
+                status: 'a_placer',
+                images: {
+                  create: [
+                    { url: 'https://placecats.com/304/200', thumb: 'https://placecats.com/104/100' },
+                  ]
+                }
+              },
+              {
+                name: 'Oscar',
+                species: 'Chien',
+                breed: 'Golden Retriever',
+                gender: 'Mâle',
+                dateOfBirth: new Date('2021-11-03'),
+                description: 'Chien doux et obéissant, parfait avec les enfants et autres animaux.',
+                status: 'a_placer',
+                images: {
+                  create: [
+                    { url: 'https://placedog.net/303/200', thumb: 'https://placedog.net/103/100' },
+                  ]
+                }
+              },
+              {
+                name: 'Filou',
+                species: 'Lapin',
+                breed: 'Angora',
+                gender: 'Mâle',
+                dateOfBirth: new Date('2023-02-14'),
+                description: 'Lapin espiègle et affectueux, aime les câlins.',
+                status: 'a_placer',
+                images: {
+                  create: [
+                    { url: 'https://picsum.photos/seed/rabbit2/300/200', thumb: 'https://picsum.photos/seed/rabbit2/100/100' },
+                  ]
+                }
+              },
+              {
+                name: 'Perle',
+                species: 'Chat',
+                breed: 'Ragdoll',
+                gender: 'Femelle',
+                dateOfBirth: new Date('2020-05-22'),
+                description: 'Chatte sereine et très câline, s\'entend bien avec tout le monde.',
+                status: 'a_placer',
+                images: {
+                  create: [
+                    { url: 'https://placecats.com/305/200', thumb: 'https://placecats.com/105/100' },
+                  ]
+                }
+              },
             ]
           }
         }
@@ -132,6 +188,76 @@ async function main() {
                 images: {
                   create: [
                     { url: 'https://placecats.com/303/200', thumb: 'https://placecats.com/103/100' },
+                  ]
+                }
+              },
+              {
+                name: 'Caramel',
+                species: 'Chien',
+                breed: 'Beagle',
+                gender: 'Mâle',
+                dateOfBirth: new Date('2022-09-07'),
+                description: 'Chien curieux et joueur, s\'adapte facilement à la vie en famille.',
+                status: 'a_placer',
+                images: {
+                  create: [
+                    { url: 'https://placedog.net/304/200', thumb: 'https://placedog.net/104/100' },
+                  ]
+                }
+              },
+              {
+                name: 'Princesse',
+                species: 'Chat',
+                breed: 'Angora',
+                gender: 'Femelle',
+                dateOfBirth: new Date('2021-01-12'),
+                description: 'Chatte élégante et douce, préfère un foyer calme sans autres animaux.',
+                status: 'a_placer',
+                images: {
+                  create: [
+                    { url: 'https://placecats.com/306/200', thumb: 'https://placecats.com/106/100' },
+                  ]
+                }
+              },
+              {
+                name: 'Réglisse',
+                species: 'Lapin',
+                breed: 'Nain',
+                gender: 'Femelle',
+                dateOfBirth: new Date('2023-06-30'),
+                description: 'Petite lapine noire très curieuse, idéale en appartement.',
+                status: 'a_placer',
+                images: {
+                  create: [
+                    { url: 'https://picsum.photos/seed/rabbit3/300/200', thumb: 'https://picsum.photos/seed/rabbit3/100/100' },
+                  ]
+                }
+              },
+              {
+                name: 'Titan',
+                species: 'Chien',
+                breed: 'Husky',
+                gender: 'Mâle',
+                dateOfBirth: new Date('2020-03-25'),
+                description: 'Chien plein d\'énergie, a besoin de longues balades quotidiennes.',
+                status: 'a_placer',
+                images: {
+                  create: [
+                    { url: 'https://placedog.net/305/200', thumb: 'https://placedog.net/105/100' },
+                  ]
+                }
+              },
+              {
+                name: 'Cookie',
+                species: 'Chat',
+                breed: 'British Shorthair',
+                gender: 'Mâle',
+                dateOfBirth: new Date('2022-12-01'),
+                description: 'Chat placide et affectueux, aime rester au chaud et être câliné.',
+                status: 'a_placer',
+                images: {
+                  create: [
+                    { url: 'https://placecats.com/307/200', thumb: 'https://placecats.com/107/100' },
                   ]
                 }
               },
