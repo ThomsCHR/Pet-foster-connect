@@ -342,7 +342,7 @@
   transition: all 0.15s;
 }
 
-.pagination-btn:hover:not(:disabled) {
+.pagination-btn:hover:not(:disabled):not(.actif) {
   border-color: #1D9E75;
   color: #1D9E75;
 }
