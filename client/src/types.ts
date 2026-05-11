@@ -58,6 +58,7 @@ export type Volunteer = {
     address: string;
     region: string | null;
     description: string | null;
+    image?: string | null;
   };
   animal?: Animal[];
 };
