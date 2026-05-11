@@ -355,7 +355,7 @@
   transition: all 0.15s;
 }
 
-.associations-pagination .pagination-btn:hover:not(:disabled) {
+.associations-pagination .pagination-btn:hover:not(:disabled):not(.actif) {
   border-color: #1D9E75;
   color: #1D9E75;
 }
