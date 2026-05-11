@@ -5,11 +5,32 @@ import type { Association } from "../../types";
 import { getRegionLabel } from "../../constants";
 import "../../assets/styles/associations.css";
 
+function getPagesAfficher(page: number, total: number): (number | "...")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const pages: (number | "...")[] = [1];
+  if (page > 3) pages.push("...");
+  for (let i = Math.max(2, page - 1); i <= Math.min(total - 1, page + 1); i++) pages.push(i);
+  if (page < total - 2) pages.push("...");
+  pages.push(total);
+  return pages;
+}
+
 function AssociationsPage() {
   const [associations, setAssociations] = useState<Association[]>([]);
   const [loading, setLoading] = useState(true);
   const [recherche, setRecherche] = useState("");
   const [filtreRegion, setFiltreRegion] = useState("Toutes");
+  const [page, setPage] = useState(1);
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia("(max-width: 639px)").matches);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  useEffect(() => { setPage(1); }, [recherche, filtreRegion]);
 
   useEffect(() => {
     async function chargerAssociations() {
@@ -41,6 +62,10 @@ function AssociationsPage() {
     const matchRegion = filtreRegion === "Toutes" || asso.user.region === filtreRegion;
     return matchNom && matchRegion;
   });
+
+  const itemsParPage = isMobile ? 6 : 9;
+  const totalPages = Math.ceil(associationsFiltrees.length / itemsParPage);
+  const assosPage = associationsFiltrees.slice((page - 1) * itemsParPage, page * itemsParPage);
 
   if (loading) {
     return <p style={{ padding: "40px", textAlign: "center" }}>Chargement...</p>;
@@ -97,12 +122,14 @@ function AssociationsPage() {
         )}
 
         <div className="associations-grille">
-          {associationsFiltrees.map((asso) => (
+          {assosPage.map((asso) => (
             <Link key={asso.id} to={"/associations/" + asso.id} className="asso-card">
 
-              {/* Bandeau avec dégradé à la place de la photo */}
               <div className="asso-photo-wrapper">
-                <div className="asso-photo-placeholder">🐾</div>
+                {asso.user.image
+                  ? <img src={asso.user.image} alt={asso.name} className="asso-photo" />
+                  : <div className="asso-photo-placeholder">🐾</div>
+                }
                 <span className="asso-dept">{getRegionLabel(asso.user.region)}</span>
               </div>
 
@@ -127,6 +154,41 @@ function AssociationsPage() {
         </div>
 
       </div>
+
+      {/* ===== PAGINATION ===== */}
+      {totalPages > 1 && (
+        <div className="associations-pagination">
+          <button
+            className="pagination-btn"
+            onClick={() => setPage((p) => p - 1)}
+            disabled={page === 1}
+          >
+            ←
+          </button>
+
+          {getPagesAfficher(page, totalPages).map((p, i) =>
+            p === "..." ? (
+              <span key={`ellipsis-${i}`} className="pagination-ellipsis">…</span>
+            ) : (
+              <button
+                key={p}
+                className={`pagination-btn ${page === p ? "actif" : ""}`}
+                onClick={() => setPage(p)}
+              >
+                {p}
+              </button>
+            )
+          )}
+
+          <button
+            className="pagination-btn"
+            onClick={() => setPage((p) => p + 1)}
+            disabled={page === totalPages}
+          >
+            →
+          </button>
+        </div>
+      )}
 
     </div>
   );

@@ -69,3 +69,22 @@ export const deleteAnimalImage = async (req: Request, res: Response, next: NextF
     next(error);
   }
 };
+
+export const uploadAssociationCover = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (req.user?.role !== "association") throw new AppError(403, "Réservé aux associations");
+    if (!req.file) throw new AppError(400, "Aucun fichier envoyé");
+
+    const assoc = await prisma.association.findUnique({ where: { id: Number(req.params.id) } });
+    if (!assoc) throw new AppError(404, "Association introuvable");
+    if (assoc.userId !== req.user.id) throw new AppError(403);
+
+    const { url } = await uploadToImgbb(req.file.buffer);
+
+    await prisma.users.update({ where: { id: assoc.userId }, data: { image: url } });
+
+    res.status(200).json({ message: "Photo de couverture mise à jour", url });
+  } catch (error) {
+    next(error);
+  }
+};

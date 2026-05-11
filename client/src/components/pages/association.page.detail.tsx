@@ -50,6 +50,9 @@ function AssociationDetailPage({}: Props) {
   const [editDescr, setEditDescr]     = useState("");
   const [editError, setEditError]     = useState("");
 
+  // Photo de couverture
+  const [coverUploading, setCoverUploading] = useState(false);
+
   // Formulaire d'ajout / modification d'animal
   const [formVisible, setFormVisible]   = useState(false);
   const [editAnimalId, setEditAnimalId] = useState<number | null>(null);
@@ -541,6 +544,29 @@ function AssociationDetailPage({}: Props) {
     );
   }
 
+  async function changerPhotoCouverture(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCoverUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await fetch(`${API_BASE}/api/associations/${id}/cover`, {
+        method: "POST",
+        credentials: "include",
+        body: fd,
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setAssociation((prev) => prev ? { ...prev, user: { ...prev.user, image: json.url } } : prev);
+      }
+    } catch (err) {
+      console.error("Erreur upload couverture :", err);
+    }
+    setCoverUploading(false);
+    e.target.value = "";
+  }
+
   // ── Affichages conditionnels ──
 
   if (loading) {
@@ -562,7 +588,11 @@ function AssociationDetailPage({}: Props) {
     <div className="detail-page">
 
       {/* ===== EN-TÊTE ===== */}
-      <div className="detail-header detail-header-placeholder">
+      <div className={`detail-header${association.user.image ? "" : " detail-header-placeholder"}`}>
+        {association.user.image && (
+          <img src={association.user.image} alt="" className="detail-header-cover" />
+        )}
+
         <h1>{association.name}</h1>
         <span className="detail-region-badge">
           📍 {getRegionLabel(association.user.region)}
@@ -610,6 +640,25 @@ function AssociationDetailPage({}: Props) {
               )}
 
               <div className="profil-asso-form-grille">
+                <div className="profil-asso-form-groupe full">
+                  <label className="profil-asso-form-label">Photo de couverture</label>
+                  <div className="profil-asso-cover-preview">
+                    {association.user.image && (
+                      <img src={association.user.image} alt="Couverture actuelle" className="profil-asso-cover-img" />
+                    )}
+                    <label className="profil-asso-cover-btn">
+                      {coverUploading ? "Chargement..." : association.user.image ? "Changer la photo" : "Ajouter une photo"}
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={changerPhotoCouverture}
+                        disabled={coverUploading}
+                        style={{ display: "none" }}
+                      />
+                    </label>
+                  </div>
+                </div>
+
                 <div className="profil-asso-form-groupe full">
                   <label className="profil-asso-form-label">Nom de l'association *</label>
                   <input

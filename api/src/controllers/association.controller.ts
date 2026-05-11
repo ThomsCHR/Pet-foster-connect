@@ -6,7 +6,7 @@ export const getAssociations = async (req: Request, res: Response, next: NextFun
   try {
     const associations = await prisma.association.findMany({
       include: {
-        user: { select: { email: true, phone: true, region: true, description: true } },
+        user: { select: { email: true, phone: true, region: true, description: true, image: true } },
         _count: { select: { animals: true } },
       },
     });
@@ -21,7 +21,7 @@ export const getAssociationById = async (req: Request, res: Response, next: Next
     const association = await prisma.association.findUnique({
       where: { id: Number(req.params.id) },
       include: {
-        user: { select: { email: true, phone: true, address: true, region: true, description: true } },
+        user: { select: { email: true, phone: true, address: true, region: true, description: true, image: true } },
         animals: { include: { images: true } },
       },
     });
@@ -81,7 +81,7 @@ export const updateAssociation = async (req: Request, res: Response, next: NextF
         },
       },
       include: {
-        user: { select: { email: true, phone: true, address: true, region: true, description: true } },
+        user: { select: { email: true, phone: true, address: true, region: true, description: true, image: true } },
       },
     });
     res.json(updatedAssociation);
