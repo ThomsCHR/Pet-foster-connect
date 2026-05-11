@@ -70,6 +70,25 @@ export const deleteAnimalImage = async (req: Request, res: Response, next: NextF
   }
 };
 
+export const uploadVolunteerAvatar = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (req.user?.role !== "volunteer") throw new AppError(403, "Réservé aux bénévoles");
+    if (!req.file) throw new AppError(400, "Aucun fichier envoyé");
+
+    const volunteer = await prisma.volunteer.findUnique({ where: { id: Number(req.params.id) } });
+    if (!volunteer) throw new AppError(404, "Bénévole introuvable");
+    if (volunteer.userId !== req.user.id) throw new AppError(403);
+
+    const { url } = await uploadToImgbb(req.file.buffer);
+
+    await prisma.users.update({ where: { id: volunteer.userId }, data: { image: url } });
+
+    res.status(200).json({ message: "Photo de profil mise à jour", url });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const uploadAssociationCover = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.user?.role !== "association") throw new AppError(403, "Réservé aux associations");

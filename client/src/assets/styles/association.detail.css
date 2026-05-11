@@ -728,6 +728,19 @@
   margin: 0 0 4px;
 }
 
+.detail-demande-benevole-link {
+  font-size: 15px;
+  font-weight: 700;
+  color: #6366f1;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.detail-demande-benevole-link:hover {
+  text-decoration: underline;
+}
+
 .detail-demande-meta {
   font-size: 12px;
   color: #777;

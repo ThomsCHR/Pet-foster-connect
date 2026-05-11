@@ -1061,9 +1061,9 @@ function AssociationDetailPage({}: Props) {
                     </Link>
 
                     <div className="detail-demande-infos">
-                      <p className="detail-demande-benevole">
+                      <Link to={"/volunteer/" + demande.volunteerId} className="detail-demande-benevole-link">
                         {volunteer.firstname} {volunteer.lastname}
-                      </p>
+                      </Link>
                       <p className="detail-demande-meta">📧 {volunteer.user.email}</p>
                       <p className="detail-demande-meta">📞 {volunteer.user.phone}</p>
                       <p className="detail-demande-meta">🐾 Capacité : {volunteer.capacity}</p>
