@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
 import { prisma } from "../client";
 
-// GET /api/stats
+
 // Retourne les chiffres clés de la plateforme
 export const getStats = async (req: Request, res: Response): Promise<void> => {
   try {

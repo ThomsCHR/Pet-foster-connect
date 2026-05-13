@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { apiFetch } from "../../lib/api";
+import { apiFetch, ApiError } from "../../lib/api";
 import type { Animal, OfferStatus } from "../../types";
 import { ANIMAL_STATUS_LABELS, ANIMAL_STATUS_CLASS, getRegionLabel } from "../../constants";
 import "../../assets/styles/animal.detail.css";
@@ -29,6 +29,7 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
   const [animal, setAnimal]   = useState<Animal | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [photoIndex, setPhotoIndex] = useState(0);
 
   // État de la demande d'accueil du bénévole pour cet animal
@@ -42,17 +43,17 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
   // Chargement des données de l'animal
   useEffect(() => {
     apiFetch(`/api/animals/${id}`)
-      .then((res) => {
-        if (res.status === 404) { setNotFound(true); setLoading(false); return null; }
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((json) => {
-        if (!json) return;
         setAnimal(json.data);
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        if (err instanceof ApiError && err.status === 404) {
+          setNotFound(true);
+        } else {
+          setError(err.message);
+        }
         setLoading(false);
       });
   }, [id]);
@@ -213,6 +214,7 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
   }
 
   if (loading) return <p>Chargement...</p>;
+  if (error) return <p style={{ padding: "40px", textAlign: "center", color: "red" }}>Impossible de charger l'animal : {error}</p>;
 
   if (notFound || !animal) {
     return (

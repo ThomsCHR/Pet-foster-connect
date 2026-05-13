@@ -18,6 +18,7 @@ function getPagesAfficher(page: number, total: number): (number | "...")[] {
 function AssociationsPage() {
   const [associations, setAssociations] = useState<Association[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [recherche, setRecherche] = useState("");
   const [filtreRegion, setFiltreRegion] = useState("Toutes");
   const [page, setPage] = useState(1);
@@ -39,7 +40,7 @@ function AssociationsPage() {
         const donnees = await reponse.json();
         setAssociations(donnees);
       } catch (erreur) {
-        console.error("Erreur lors du chargement des associations :", erreur);
+        setError((erreur as Error).message);
       }
       setLoading(false);
     }
@@ -67,9 +68,8 @@ function AssociationsPage() {
   const totalPages = Math.ceil(associationsFiltrees.length / itemsParPage);
   const assosPage = associationsFiltrees.slice((page - 1) * itemsParPage, page * itemsParPage);
 
-  if (loading) {
-    return <p style={{ padding: "40px", textAlign: "center" }}>Chargement...</p>;
-  }
+  if (loading) return <p style={{ padding: "40px", textAlign: "center" }}>Chargement...</p>;
+  if (error) return <p style={{ padding: "40px", textAlign: "center", color: "red" }}>Impossible de charger les associations : {error}</p>;
 
   return (
     <div className="associations-page">
