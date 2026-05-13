@@ -27,6 +27,7 @@ function getPagesAfficher(page: number, total: number): (number | "...")[] {
 function AnimauxPage() {
   const [animaux, setAnimaux] = useState<Animal[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filtreEspece, setFiltreEspece] = useState("Tous");
   const [filtreStatut, setFiltreStatut] = useState("Tous");
   const [recherche, setRecherche] = useState("");
@@ -50,7 +51,7 @@ function AnimauxPage() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        setError(err.message);
         setLoading(false);
       });
   }, []);
@@ -69,6 +70,7 @@ function AnimauxPage() {
   const animauxPage = animauxFiltres.slice((page - 1) * itemsParPage, page * itemsParPage);
 
   if (loading) return <p>Chargement...</p>;
+  if (error) return <p style={{ padding: "40px", textAlign: "center", color: "red" }}>Impossible de charger les animaux : {error}</p>;
 
   return (
     <div className="animaux-page">
