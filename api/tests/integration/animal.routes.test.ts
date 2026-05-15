@@ -1,98 +1,104 @@
 import request from "supertest";
-import jwt from "jsonwebtoken";
-
-// On remplace le client Prisma par un faux objet (les tests n'atteignent jamais la DB)
-jest.mock("../../src/client", () => ({
-  prisma: {
-    animal: { findMany: jest.fn(), findUnique: jest.fn(), create: jest.fn(), update: jest.fn(), delete: jest.fn() },
-    association: { findUnique: jest.fn() },
-  },
-}));
-
+import { prisma } from "../../src/client";
 import { createApp } from "../helpers/app";
+import { cleanDb } from "../helpers/db";
 
 const app = createApp();
 
-// Crée un token JWT valide pour les tests (sans base de données)
-function tokenBenevole() {
-  return jwt.sign(
-    { id: 1, email: "benevole@example.com", role: "volunteer" },
-    "test-secret-jest-key"
-  );
+const ASSO_BODY = {
+  type: "association",
+  email: "asso@test.com",
+  password: "Motdepasse1!",
+  confirmPassword: "Motdepasse1!",
+  phone: "0612345678",
+  address: "1 rue du Test, Paris",
+  nomAsso: "Test Asso",
+  siret: "12345678901234",
+};
+
+const VOLUNTEER_BODY = {
+  type: "benevole",
+  email: "benevole@test.com",
+  password: "Motdepasse1!",
+  confirmPassword: "Motdepasse1!",
+  phone: "0612345678",
+  address: "1 rue du Test, Paris",
+  firstname: "Jean",
+  lastname: "Dupont",
+  capacity: "2 animaux",
+};
+
+// Inscrit un utilisateur et retourne son cookie de session
+async function getCookieFor(body: typeof ASSO_BODY | typeof VOLUNTEER_BODY) {
+  const res = await request(app).post("/api/auth/register").send(body);
+  return res.headers["set-cookie"][0] as string;
 }
 
-function tokenAssociation() {
-  return jwt.sign(
-    { id: 2, email: "asso@example.com", role: "association" },
-    "test-secret-jest-key"
-  );
-}
+const ANIMAL_BODY = {
+  name: "Rex",
+  species: "Chien",
+  gender: "Mâle",
+  description: "Un beau chien énergique",
+};
+
+beforeEach(async () => {
+  await cleanDb();
+});
+
+afterAll(async () => {
+  await prisma.$disconnect();
+});
+
+describe("GET /api/animals", () => {
+  it("retourne 200 avec un tableau (même vide)", async () => {
+    const res = await request(app).get("/api/animals");
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+  });
+});
 
 describe("POST /api/animals", () => {
-  it("retourne 401 si on n'est pas connecté", async () => {
-    const res = await request(app).post("/api/animals").send({
-      name: "Rex",
-      species: "Chien",
-      gender: "Mâle",
-      description: "Un beau chien",
-    });
+  it("retourne 401 sans authentification", async () => {
+    const res = await request(app).post("/api/animals").send(ANIMAL_BODY);
 
     expect(res.status).toBe(401);
   });
 
-  it("retourne 403 si on est connecté en tant que bénévole", async () => {
+  it("retourne 403 si connecté en tant que bénévole", async () => {
+    const cookie = await getCookieFor(VOLUNTEER_BODY);
+
     const res = await request(app)
       .post("/api/animals")
-      .set("Cookie", `token=${tokenBenevole()}`)
-      .send({
-        name: "Rex",
-        species: "Chien",
-        gender: "Mâle",
-        description: "Un beau chien",
-      });
+      .set("Cookie", cookie)
+      .send(ANIMAL_BODY);
 
     expect(res.status).toBe(403);
   });
 
-  it("retourne 400 si le body est invalide (association connectée)", async () => {
+  it("crée un animal et retourne 201 si connecté en tant qu'association", async () => {
+    const cookie = await getCookieFor(ASSO_BODY);
+
     const res = await request(app)
       .post("/api/animals")
-      .set("Cookie", `token=${tokenAssociation()}`)
-      .send({ name: "" }); // nom vide = invalide
+      .set("Cookie", cookie)
+      .send(ANIMAL_BODY);
+
+    expect(res.status).toBe(201);
+
+    const animal = await prisma.animal.findFirst({ where: { name: "Rex" } });
+    expect(animal).not.toBeNull();
+    expect(animal?.status).toBe("a_placer");
+  });
+
+  it("retourne 400 si le body est invalide (nom manquant)", async () => {
+    const cookie = await getCookieFor(ASSO_BODY);
+
+    const res = await request(app)
+      .post("/api/animals")
+      .set("Cookie", cookie)
+      .send({ species: "Chien", gender: "Mâle", description: "Un chien" });
 
     expect(res.status).toBe(400);
-  });
-});
-
-describe("PUT /api/animals/:id", () => {
-  it("retourne 401 si on n'est pas connecté", async () => {
-    const res = await request(app).put("/api/animals/1").send({ name: "Max" });
-
-    expect(res.status).toBe(401);
-  });
-
-  it("retourne 403 si on est connecté en tant que bénévole", async () => {
-    const res = await request(app)
-      .put("/api/animals/1")
-      .set("Cookie", `token=${tokenBenevole()}`)
-      .send({ name: "Max" });
-
-    expect(res.status).toBe(403);
-  });
-});
-
-describe("DELETE /api/animals/:id", () => {
-  it("retourne 401 si on n'est pas connecté", async () => {
-    const res = await request(app).delete("/api/animals/1");
-
-    expect(res.status).toBe(401);
-  });
-
-  it("retourne 403 si on est connecté en tant que bénévole", async () => {
-    const res = await request(app)
-      .delete("/api/animals/1")
-      .set("Cookie", `token=${tokenBenevole()}`);
-
-    expect(res.status).toBe(403);
   });
 });

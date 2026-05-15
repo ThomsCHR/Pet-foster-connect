@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createAssociation, deleteAssociation, getAssociationById, getAssociations, updateAssociation } from "../controllers/association.controller";
+import { deleteAssociation, getAssociationById, getAssociations, updateAssociation } from "../controllers/association.controller";
 import { uploadAssociationCover } from "../controllers/image.controller";
 import { requireAuth } from "../middlewares/auth.middleware";
 import { upload } from "../middlewares/upload.middleware";
@@ -11,9 +11,6 @@ const associationRouter = Router();
 
 // recuperer toutes les associations
 associationRouter.get("/", getAssociations);
-
-// creer une association
-associationRouter.post("/", createAssociation);
 
 // recuperer une association par son ID
 associationRouter.get("/:id", getAssociationById);

@@ -1,6 +1,6 @@
 // ── Statuts ──────────────────────────────────────────────────────────────────
 
-export type AnimalStatus = "a_placer" | "placement_en_cours" | "adopte" | "place";
+export type AnimalStatus = "a_placer" | "adopte" | "place";
 export type OfferStatus = "soumise" | "acceptee" | "refusee" | "annulee";
 
 // ── Briques de base ───────────────────────────────────────────────────────────

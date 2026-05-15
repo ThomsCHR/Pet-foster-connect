@@ -23,7 +23,6 @@ export const regionEnum = z.enum([
 
 export const animalStatusEnum = z.enum([
   "a_placer",
-  "placement_en_cours",
   "adopte",
   "place",
 ]);

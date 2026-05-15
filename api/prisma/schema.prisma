@@ -35,7 +35,6 @@ enum Region {
 
 enum AnimalStatus {
   a_placer
-  placement_en_cours
   adopte
   place
 }

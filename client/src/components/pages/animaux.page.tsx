@@ -9,7 +9,6 @@ const FILTRES_ESPECE = ["Tous", "Chien", "Chat"];
 const FILTRES_STATUT: { label: string; value: string }[] = [
   { label: "Tous", value: "Tous" },
   { label: "À placer", value: "a_placer" },
-  { label: "Placement en cours", value: "placement_en_cours" },
   { label: "Placé", value: "place" },
   { label: "Adopté", value: "adopte" },
 ];

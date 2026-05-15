@@ -841,7 +841,6 @@ function AssociationDetailPage({}: Props) {
                   onChange={(e) => setFormStatut(e.target.value)}
                 >
                   <option value="a_placer">À placer</option>
-                  <option value="placement_en_cours">Placement en cours</option>
                   <option value="place">Placé</option>
                   <option value="adopte">Adopté</option>
                 </select>

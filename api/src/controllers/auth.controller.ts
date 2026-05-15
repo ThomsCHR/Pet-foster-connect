@@ -90,7 +90,7 @@ export async function me(req: Request, res: Response, next: NextFunction): Promi
       include: { volunteer: true, association: true },
     });
 
-    if (!user) throw new AppError(404);
+    if (!user) throw new AppError(404, "Utilisateur introuvable");
 
     const { password: _pw, ...userWithoutPassword } = user;
     res.status(200).json(userWithoutPassword);

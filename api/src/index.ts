@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
 import Router from './routers/router';
 import { errorMiddleware } from './middlewares/error.middleware';
 
@@ -10,6 +11,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(helmet());
 app.use(cors({ origin: "http://localhost:3004", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
