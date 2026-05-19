@@ -25,9 +25,4 @@ animalRouter.put("/:id", requireAuth, validate(updateAnimalSchema), updateAnimal
 animalRouter.delete("/:id", requireAuth, deleteAnimal);
 
 
-
-
-
-
-
 export default animalRouter;
