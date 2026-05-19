@@ -52,17 +52,15 @@ export function getRegionLabel(regionValue: string | null, fallback = "France"):
 // ── Statuts animaux ───────────────────────────────────────────────────────────
 
 export const ANIMAL_STATUS_LABELS: Record<AnimalStatus, string> = {
-  a_placer:           "À placer",
-  placement_en_cours: "Placement en cours",
-  place:              "Placé",
-  adopte:             "Adopté",
+  a_placer: "À placer",
+  place:    "Placé",
+  adopte:   "Adopté",
 };
 
 export const ANIMAL_STATUS_CLASS: Record<AnimalStatus, string> = {
-  a_placer:           "statut-a-placer",
-  placement_en_cours: "statut-placement-en-cours",
-  place:              "statut-place",
-  adopte:             "statut-adopte",
+  a_placer: "statut-a-placer",
+  place:    "statut-place",
+  adopte:   "statut-adopte",
 };
 
 // ── Statuts des demandes ──────────────────────────────────────────────────────

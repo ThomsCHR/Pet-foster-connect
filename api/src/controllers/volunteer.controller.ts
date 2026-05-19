@@ -32,7 +32,7 @@ export const updateVolunteer = async (req: Request, res: Response, next: NextFun
 
     const volunteer = await prisma.volunteer.findUnique({ where: { id: volunteerId } });
     if (!volunteer) throw new AppError(404, "Bénévole introuvable");
-    if (volunteer.userId !== req.user!.id) throw new AppError(403);
+    if (volunteer.userId !== req.user!.id) throw new AppError(403, "Vous ne pouvez modifier que votre propre profil");
 
     const volunteerMisAJour = await prisma.volunteer.update({
       where: { id: volunteerId },
@@ -74,7 +74,7 @@ export const deleteVolunteer = async (req: Request, res: Response, next: NextFun
 
     const volunteer = await prisma.volunteer.findUnique({ where: { id: volunteerId } });
     if (!volunteer) throw new AppError(404, "Bénévole introuvable");
-    if (volunteer.userId !== req.user!.id) throw new AppError(403);
+    if (volunteer.userId !== req.user!.id) throw new AppError(403, "Vous ne pouvez supprimer que votre propre compte");
 
     await prisma.users.delete({ where: { id: volunteer.userId } });
     res.status(200).json({ message: "Compte supprimé" });

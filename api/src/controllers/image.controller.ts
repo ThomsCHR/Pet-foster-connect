@@ -13,7 +13,7 @@ export const uploadAnimalImage = async (req: Request, res: Response, next: NextF
       include: { association: true },
     });
     if (!animal) throw new AppError(404, "Animal introuvable");
-    if (animal.association.userId !== req.user.id) throw new AppError(403);
+    if (animal.association.userId !== req.user.id) throw new AppError(403, "Cet animal n'appartient pas à votre association");
 
     const { url, thumb } = await uploadToImgbb(req.file.buffer);
 
@@ -37,7 +37,7 @@ export const updateAnimalImage = async (req: Request, res: Response, next: NextF
       include: { animal: { include: { association: true } } },
     });
     if (!image) throw new AppError(404, "Image introuvable");
-    if (image.animal.association.userId !== req.user.id) throw new AppError(403);
+    if (image.animal.association.userId !== req.user.id) throw new AppError(403, "Cette image n'appartient pas à votre association");
 
     const { url, thumb } = await uploadToImgbb(req.file.buffer);
 
@@ -61,7 +61,7 @@ export const deleteAnimalImage = async (req: Request, res: Response, next: NextF
       include: { animal: { include: { association: true } } },
     });
     if (!image) throw new AppError(404, "Image introuvable");
-    if (image.animal.association.userId !== req.user.id) throw new AppError(403);
+    if (image.animal.association.userId !== req.user.id) throw new AppError(403, "Cette image n'appartient pas à votre association");
 
     await prisma.image.delete({ where: { id: image.id } });
     res.status(200).json({ message: "Image supprimée" });
@@ -77,7 +77,7 @@ export const uploadVolunteerAvatar = async (req: Request, res: Response, next: N
 
     const volunteer = await prisma.volunteer.findUnique({ where: { id: Number(req.params.id) } });
     if (!volunteer) throw new AppError(404, "Bénévole introuvable");
-    if (volunteer.userId !== req.user.id) throw new AppError(403);
+    if (volunteer.userId !== req.user.id) throw new AppError(403, "Vous ne pouvez modifier que votre propre photo de profil");
 
     const { url } = await uploadToImgbb(req.file.buffer);
 
@@ -96,7 +96,7 @@ export const uploadAssociationCover = async (req: Request, res: Response, next: 
 
     const assoc = await prisma.association.findUnique({ where: { id: Number(req.params.id) } });
     if (!assoc) throw new AppError(404, "Association introuvable");
-    if (assoc.userId !== req.user.id) throw new AppError(403);
+    if (assoc.userId !== req.user.id) throw new AppError(403, "Cette association ne vous appartient pas");
 
     const { url } = await uploadToImgbb(req.file.buffer);
 

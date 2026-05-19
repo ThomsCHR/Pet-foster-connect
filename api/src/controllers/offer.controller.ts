@@ -42,7 +42,7 @@ export const getOffersByVolunteer = async (req: Request, res: Response, next: Ne
     const { volunteerId } = req.params;
 
     const volunteer = await prisma.volunteer.findFirst({ where: { userId: req.user!.id } });
-    if (!volunteer || volunteer.id !== Number(volunteerId)) throw new AppError(403);
+    if (!volunteer || volunteer.id !== Number(volunteerId)) throw new AppError(403, "Vous ne pouvez consulter que vos propres demandes");
 
     const offers = await prisma.offer.findMany({
       where: { volunteerId: Number(volunteerId) },
@@ -61,7 +61,7 @@ export const getOffersByAssociation = async (req: Request, res: Response, next: 
     const { associationId } = req.params;
 
     const association = await prisma.association.findFirst({ where: { userId: req.user!.id } });
-    if (!association || association.id !== Number(associationId)) throw new AppError(403);
+    if (!association || association.id !== Number(associationId)) throw new AppError(403, "Vous ne pouvez consulter que les demandes de votre association");
 
     const offers = await prisma.offer.findMany({
       where: { animal: { associationId: Number(associationId) } },
@@ -90,6 +90,26 @@ export const updateOfferStatus = async (req: Request, res: Response, next: NextF
     if (status === "annulee") {
       const volunteer = await prisma.volunteer.findFirst({ where: { userId: req.user!.id } });
       if (!volunteer || volunteer.id !== Number(volunteerId)) throw new AppError(403, "Non autorisé à annuler cette demande");
+
+      if (offer.status === "acceptee") {
+        await prisma.$transaction([
+          prisma.offer.update({
+            where: { volunteerId_animalId: { volunteerId: Number(volunteerId), animalId: Number(animalId) } },
+            data: { status: "annulee" },
+          }),
+          prisma.animal.update({
+            where: { id: Number(animalId) },
+            data: { status: "a_placer", volunteerId: null },
+          }),
+        ]);
+      } else {
+        await prisma.offer.update({
+          where: { volunteerId_animalId: { volunteerId: Number(volunteerId), animalId: Number(animalId) } },
+          data: { status: "annulee" },
+        });
+      }
+
+      return res.status(200).json({ message: "Demande annulée" });
     } else {
       const association = await prisma.association.findFirst({ where: { userId: req.user!.id } });
       if (!association || association.id !== offer.animal.associationId) throw new AppError(403, "Non autorisé à traiter cette demande");

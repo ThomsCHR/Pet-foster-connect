@@ -64,7 +64,7 @@ async function main() {
                 gender: 'Mâle',
                 dateOfBirth: new Date('2019-06-01'),
                 description: 'Chien énergique, a besoin d\'un grand espace et de beaucoup d\'exercice.',
-                status: 'placement_en_cours',
+                status: 'a_placer',
                 images: {
                   create: [
                     { url: 'https://placedog.net/300/200', thumb: 'https://placedog.net/100/100' },

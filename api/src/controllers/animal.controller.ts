@@ -59,7 +59,7 @@ export const updateAnimal = async (req: Request, res: Response, next: NextFuncti
       include: { association: true },
     });
     if (!animal) throw new AppError(404, "Animal introuvable");
-    if (animal.association.userId !== req.user.id) throw new AppError(403);
+    if (animal.association.userId !== req.user.id) throw new AppError(403, "Vous ne pouvez modifier que les animaux de votre association");
 
     const { name, species, breed, gender, description, status, dateOfBirth } = req.body;
     const updatedAnimal = await prisma.animal.update({
@@ -89,7 +89,7 @@ export const deleteAnimal = async (req: Request, res: Response, next: NextFuncti
       include: { association: true },
     });
     if (!animal) throw new AppError(404, "Animal introuvable");
-    if (animal.association.userId !== req.user.id) throw new AppError(403);
+    if (animal.association.userId !== req.user.id) throw new AppError(403, "Vous ne pouvez supprimer que les animaux de votre association");
 
     await prisma.animal.delete({ where: { id: Number(req.params.id) } });
     res.status(200).json({ message: "Animal deleted" });

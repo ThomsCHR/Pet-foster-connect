@@ -32,31 +32,6 @@ export const getAssociationById = async (req: Request, res: Response, next: Next
   }
 };
 
-export const createAssociation = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { name, siret, email, phone, address, description, region } = req.body;
-    const newAssociation = await prisma.association.create({
-      data: {
-        name,
-        siret,
-        user: {
-          create: {
-            email,
-            phone,
-            address,
-            description: description || undefined,
-            region: region || undefined,
-            password: "",
-          },
-        },
-      },
-    });
-    res.status(201).json(newAssociation);
-  } catch (error) {
-    next(error);
-  }
-};
-
 export const updateAssociation = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, email, phone, address, description, region } = req.body;
@@ -64,7 +39,7 @@ export const updateAssociation = async (req: Request, res: Response, next: NextF
     if (req.user?.role !== "association") throw new AppError(403, "Réservé aux associations");
 
     const assoc = await prisma.association.findUnique({ where: { id: Number(req.params.id) } });
-    if (!assoc || assoc.userId !== req.user.id) throw new AppError(403);
+    if (!assoc || assoc.userId !== req.user.id) throw new AppError(403, "Vous ne pouvez modifier que votre propre association");
 
     const updatedAssociation = await prisma.association.update({
       where: { id: Number(req.params.id) },
@@ -96,7 +71,7 @@ export const deleteAssociation = async (req: Request, res: Response, next: NextF
 
     const assoc = await prisma.association.findUnique({ where: { id: Number(req.params.id) } });
     if (!assoc) throw new AppError(404, "Association introuvable");
-    if (assoc.userId !== req.user.id) throw new AppError(403);
+    if (assoc.userId !== req.user.id) throw new AppError(403, "Vous ne pouvez supprimer que votre propre compte");
 
     await prisma.users.delete({ where: { id: assoc.userId } });
     res.status(200).json({ message: "Compte supprimé" });
