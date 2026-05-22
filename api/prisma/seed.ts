@@ -22,6 +22,7 @@ async function main() {
       address: '12 rue des Chats, Lyon',
       region: 'Auvergne_Rhone_Alpes',
       description: 'Association engagée pour le bien-être animal depuis 2005.',
+      image: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&auto=format&fit=crop',
       association: {
         create: {
           name: 'Les Pattes Douces',
@@ -38,8 +39,8 @@ async function main() {
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://placecats.com/300/200', thumb: 'https://placecats.com/100/100' },
-                    { url: 'https://placecats.com/301/200', thumb: 'https://placecats.com/101/100' },
+                    { url: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&auto=format&fit=crop' },
+                    { url: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
@@ -53,7 +54,7 @@ async function main() {
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://placecats.com/302/200', thumb: 'https://placecats.com/102/100' },
+                    { url: 'https://images.unsplash.com/photo-1615789591457-74a63395c990?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1615789591457-74a63395c990?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
@@ -67,7 +68,7 @@ async function main() {
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://placedog.net/300/200', thumb: 'https://placedog.net/100/100' },
+                    { url: 'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
@@ -81,7 +82,7 @@ async function main() {
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://placecats.com/304/200', thumb: 'https://placecats.com/104/100' },
+                    { url: 'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
@@ -95,21 +96,21 @@ async function main() {
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://placedog.net/303/200', thumb: 'https://placedog.net/103/100' },
+                    { url: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
               {
                 name: 'Filou',
-                species: 'Lapin',
+                species: 'Chat',
                 breed: 'Angora',
                 gender: 'Mâle',
                 dateOfBirth: new Date('2023-02-14'),
-                description: 'Lapin espiègle et affectueux, aime les câlins.',
+                description: 'Chat espiègle et affectueux, aime les câlins.',
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://picsum.photos/seed/rabbit2/300/200', thumb: 'https://picsum.photos/seed/rabbit2/100/100' },
+                    { url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
@@ -123,7 +124,7 @@ async function main() {
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://placecats.com/305/200', thumb: 'https://placecats.com/105/100' },
+                    { url: 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
@@ -142,6 +143,7 @@ async function main() {
       address: '8 boulevard des Animaux, Bordeaux',
       region: 'Nouvelle_Aquitaine',
       description: 'Refuge spécialisé dans le sauvetage d\'animaux abandonnés.',
+      image: 'https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?w=800&auto=format&fit=crop',
       association: {
         create: {
           name: 'Refuge du Soleil',
@@ -158,22 +160,22 @@ async function main() {
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://placedog.net/301/200', thumb: 'https://placedog.net/101/100' },
-                    { url: 'https://placedog.net/302/200', thumb: 'https://placedog.net/102/100' },
+                    { url: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=200&auto=format&fit=crop' },
+                    
                   ]
                 }
               },
               {
                 name: 'Noisette',
-                species: 'Lapin',
-                breed: 'Bélier',
+                species: 'Chat',
+                breed: 'Européen',
                 gender: 'Femelle',
                 dateOfBirth: new Date('2023-04-05'),
-                description: 'Lapine très calme, idéale pour un appartement.',
+                description: 'Chatte très calme, idéale pour un appartement.',
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://picsum.photos/seed/rabbit1/300/200', thumb: 'https://picsum.photos/seed/rabbit1/100/100' },
+                    { url: 'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
@@ -187,7 +189,7 @@ async function main() {
                 status: 'place',
                 images: {
                   create: [
-                    { url: 'https://placecats.com/303/200', thumb: 'https://placecats.com/103/100' },
+                    { url: 'https://images.unsplash.com/photo-1595433707802-6b2626ef1c91?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1595433707802-6b2626ef1c91?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
@@ -201,7 +203,7 @@ async function main() {
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://placedog.net/304/200', thumb: 'https://placedog.net/104/100' },
+                    { url: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
@@ -215,21 +217,21 @@ async function main() {
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://placecats.com/306/200', thumb: 'https://placecats.com/106/100' },
+                    { url: 'https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
               {
                 name: 'Réglisse',
-                species: 'Lapin',
+                species: 'Chat',
                 breed: 'Nain',
                 gender: 'Femelle',
                 dateOfBirth: new Date('2023-06-30'),
-                description: 'Petite lapine noire très curieuse, idéale en appartement.',
+                description: 'Petite chatte noire très curieuse, idéale en appartement.',
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://picsum.photos/seed/rabbit3/300/200', thumb: 'https://picsum.photos/seed/rabbit3/100/100' },
+                    { url: 'https://images.unsplash.com/photo-1583511655826-05700d52f4d9?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1583511655826-05700d52f4d9?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
@@ -243,7 +245,7 @@ async function main() {
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://placedog.net/305/200', thumb: 'https://placedog.net/105/100' },
+                    { url: 'https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=200&auto=format&fit=crop' },
                   ]
                 }
               },
@@ -257,7 +259,7 @@ async function main() {
                 status: 'a_placer',
                 images: {
                   create: [
-                    { url: 'https://placecats.com/307/200', thumb: 'https://placecats.com/107/100' },
+                    { url: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&auto=format&fit=crop', thumb: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=200&auto=format&fit=crop' },
                   ]
                 }
               },

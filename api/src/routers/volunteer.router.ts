@@ -8,7 +8,7 @@ import { updateVolunteerSchema } from "../schemas";
 
 const volunteerRouter = Router();
 
-volunteerRouter.get("/:id", getVolunteerById);
+volunteerRouter.get("/:id", requireAuth, getVolunteerById);
 volunteerRouter.put("/:id", requireAuth, validate(updateVolunteerSchema), updateVolunteer);
 volunteerRouter.post("/:id/avatar", requireAuth, upload.single("image"), uploadVolunteerAvatar);
 volunteerRouter.delete("/:id", requireAuth, deleteVolunteer);
