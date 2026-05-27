@@ -73,6 +73,13 @@ export const deleteAssociation = async (req: Request, res: Response, next: NextF
     if (!assoc) throw new AppError(404, "Association introuvable");
     if (assoc.userId !== req.user.id) throw new AppError(403, "Vous ne pouvez supprimer que votre propre compte");
 
+    const animauxPlaces = await prisma.animal.count({
+      where: { associationId: assoc.id, status: "place" },
+    });
+    if (animauxPlaces > 0) {
+      throw new AppError(400, `Impossible de supprimer votre compte : ${animauxPlaces} animal(aux) sont actuellement placés chez des bénévoles.`);
+    }
+
     await prisma.users.delete({ where: { id: assoc.userId } });
     res.status(200).json({ message: "Compte supprimé" });
   } catch (error) {

@@ -68,6 +68,14 @@ function AssociationDetailPage({}: Props) {
   const [formImage, setFormImage]       = useState<File | null>(null);
   const [formImages, setFormImages]     = useState<File[]>([]);
 
+  // Modale de confirmation de suppression d'animal
+  const [animalASupprimer, setAnimalASupprimer] = useState<number | null>(null);
+
+  // Suppression du compte association
+  const [confirmSupprimerCompte, setConfirmSupprimerCompte] = useState(false);
+  const [supprimerCompteErreur, setSupprimerCompteErreur]   = useState("");
+  const [deletingCompte, setDeletingCompte]                 = useState(false);
+
   // Chargement de l'association
   useEffect(() => {
     async function chargerAssociation() {
@@ -129,6 +137,26 @@ function AssociationDetailPage({}: Props) {
   async function seDeconnecter() {
     await logout();
     navigate("/");
+  }
+
+  async function supprimerCompte() {
+    setSupprimerCompteErreur("");
+    setDeletingCompte(true);
+    try {
+      const assocId = connectedUser?.association?.id;
+      const reponse = await apiFetch(`/api/associations/${assocId}`, { method: "DELETE" });
+      if (reponse.ok) {
+        await logout();
+        navigate("/");
+      } else {
+        const data = await reponse.json();
+        setSupprimerCompteErreur(data.error ?? "Erreur lors de la suppression.");
+      }
+    } catch {
+      setSupprimerCompteErreur("Erreur réseau.");
+    } finally {
+      setDeletingCompte(false);
+    }
   }
 
   // Vérifie si le bénévole connecté peut faire une demande sur cet animal
@@ -463,19 +491,19 @@ function AssociationDetailPage({}: Props) {
     }
   }
 
-  async function supprimerAnimal(animalId: number) {
-    const ok = window.confirm("Supprimer cet animal ? Cette action est irréversible.");
-    if (!ok) return;
-
+  async function supprimerAnimal() {
+    if (animalASupprimer === null) return;
     try {
-      const reponse = await apiFetch(`/api/animals/${animalId}`, { method: "DELETE" });
+      const reponse = await apiFetch(`/api/animals/${animalASupprimer}`, { method: "DELETE" });
       if (reponse.ok) {
         setAssociation((prev) =>
-          prev ? { ...prev, animals: prev.animals.filter((a) => a.id !== animalId) } : prev
+          prev ? { ...prev, animals: prev.animals.filter((a) => a.id !== animalASupprimer) } : prev
         );
       }
     } catch (err) {
       console.error("Erreur lors de la suppression :", err);
+    } finally {
+      setAnimalASupprimer(null);
     }
   }
 
@@ -585,6 +613,7 @@ function AssociationDetailPage({}: Props) {
   const demandesEnAttente = demandesRecues.filter((d) => d.status === "soumise").length;
 
   return (
+    <>
     <div className="detail-page">
 
       {/* ===== EN-TÊTE ===== */}
@@ -607,6 +636,9 @@ function AssociationDetailPage({}: Props) {
             )}
             <button className="detail-header-btn-logout" onClick={seDeconnecter}>
               Se déconnecter
+            </button>
+            <button className="btn-animal-delete" onClick={() => { setSupprimerCompteErreur(""); setConfirmSupprimerCompte(true); }}>
+              Supprimer mon compte
             </button>
           </div>
         )}
@@ -997,7 +1029,7 @@ function AssociationDetailPage({}: Props) {
                       </button>
                       <button
                         className="btn-animal-delete"
-                        onClick={() => supprimerAnimal(animal.id)}
+                        onClick={() => setAnimalASupprimer(animal.id)}
                       >
                         Supprimer
                       </button>
@@ -1106,6 +1138,34 @@ function AssociationDetailPage({}: Props) {
       )}
 
     </div>
+
+      {confirmSupprimerCompte && (
+        <div className="modal-overlay" onClick={() => setConfirmSupprimerCompte(false)}>
+          <div className="modal-confirm" onClick={(e) => e.stopPropagation()}>
+            <p>Supprimer définitivement votre compte ? Cette action est irréversible.</p>
+            {supprimerCompteErreur && <p style={{ color: "red", fontSize: "0.85rem" }}>{supprimerCompteErreur}</p>}
+            <div className="modal-confirm-actions">
+              <button className="btn-cancel" onClick={() => setConfirmSupprimerCompte(false)}>Annuler</button>
+              <button className="btn-animal-delete" onClick={supprimerCompte} disabled={deletingCompte}>
+                {deletingCompte ? "Suppression..." : "Supprimer"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {animalASupprimer !== null && (
+        <div className="modal-overlay" onClick={() => setAnimalASupprimer(null)}>
+          <div className="modal-confirm" onClick={(e) => e.stopPropagation()}>
+            <p>Supprimer cet animal ? Cette action est irréversible.</p>
+            <div className="modal-confirm-actions">
+              <button className="btn-cancel" onClick={() => setAnimalASupprimer(null)}>Annuler</button>
+              <button className="btn-animal-delete" onClick={supprimerAnimal}>Supprimer</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

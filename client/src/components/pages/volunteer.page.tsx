@@ -51,7 +51,8 @@ function VolunteerPage() {
   const [avatarPreview, setAvatarPreview] = useState<string>("");
 
   // Suppression de compte
-  const [deleting, setDeleting]         = useState(false);
+  const [deleting, setDeleting]           = useState(false);
+  const [confirmSupprimer, setConfirmSupprimer] = useState(false);
 
   // Demandes d'accueil du bénévole
   const [offers, setOffers]             = useState<VolunteerOffer[]>([]);
@@ -145,7 +146,6 @@ function VolunteerPage() {
   }
 
   async function supprimerCompte() {
-    if (!window.confirm("Supprimer définitivement votre compte ? Cette action est irréversible.")) return;
     setDeleting(true);
     try {
       const reponse = await apiFetch("/api/volunteers/" + id, { method: "DELETE" });
@@ -266,6 +266,7 @@ function VolunteerPage() {
   const demandesEnAttente = offers.filter((o) => o.status === "soumise").length;
 
   return (
+    <>
     <div className="profil-page">
       <div className="profil-inner">
 
@@ -421,7 +422,7 @@ function VolunteerPage() {
               </div>
 
               <div style={{ borderTop: "1px solid #f3f4f6", paddingTop: "20px", marginTop: "8px" }}>
-                <button type="button" className="profil-btn-delete" onClick={supprimerCompte} disabled={deleting}>
+                <button type="button" className="profil-btn-delete" onClick={() => setConfirmSupprimer(true)} disabled={deleting}>
                   {deleting ? "Suppression..." : "Supprimer mon compte"}
                 </button>
               </div>
@@ -570,6 +571,21 @@ function VolunteerPage() {
 
       </div>
     </div>
+
+    {confirmSupprimer && (
+      <div className="modal-overlay" onClick={() => setConfirmSupprimer(false)}>
+        <div className="modal-confirm" onClick={(e) => e.stopPropagation()}>
+          <p>Supprimer définitivement votre compte ? Cette action est irréversible.</p>
+          <div className="modal-confirm-actions">
+            <button className="btn-cancel" onClick={() => setConfirmSupprimer(false)}>Annuler</button>
+            <button className="profil-btn-delete" onClick={supprimerCompte} disabled={deleting}>
+              {deleting ? "Suppression..." : "Supprimer"}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 
