@@ -637,9 +637,6 @@ function AssociationDetailPage({}: Props) {
             <button className="detail-header-btn-logout" onClick={seDeconnecter}>
               Se déconnecter
             </button>
-            <button className="btn-animal-delete" onClick={() => { setSupprimerCompteErreur(""); setConfirmSupprimerCompte(true); }}>
-              Supprimer mon compte
-            </button>
           </div>
         )}
       </div>
@@ -766,6 +763,12 @@ function AssociationDetailPage({}: Props) {
                 </button>
                 <button type="submit" className="profil-asso-btn-save" disabled={saving}>
                   {saving ? "Enregistrement..." : "Enregistrer"}
+                </button>
+              </div>
+
+              <div style={{ borderTop: "1px solid #f3f4f6", paddingTop: "20px", marginTop: "8px" }}>
+                <button type="button" className="btn-animal-delete" onClick={() => { setSupprimerCompteErreur(""); setConfirmSupprimerCompte(true); }} disabled={deletingCompte}>
+                  {deletingCompte ? "Suppression..." : "Supprimer mon compte"}
                 </button>
               </div>
 
