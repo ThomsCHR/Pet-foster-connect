@@ -72,9 +72,11 @@ export const deleteVolunteer = async (req: Request, res: Response, next: NextFun
   try {
     const volunteerId = Number(req.params.id);
 
-    const volunteer = await prisma.volunteer.findUnique({ where: { id: volunteerId } });
+    const volunteer = await prisma.volunteer.findUnique({ where: { id: volunteerId }, include: { animal: true } });
     if (!volunteer) throw new AppError(404, "Bénévole introuvable");
     if (volunteer.userId !== req.user!.id) throw new AppError(403, "Vous ne pouvez supprimer que votre propre compte");
+
+    if (volunteer.animal.length > 0) throw new AppError(400, `Impossible de supprimer votre compte : vous avez ${volunteer.animal.length} animal(aux) en accueil. Contactez l'association pour qu'elle remette l'animal en recherche de famille d'accueil.`);
 
     await prisma.users.delete({ where: { id: volunteer.userId } });
     res.status(200).json({ message: "Compte supprimé" });

@@ -71,6 +71,7 @@ export const updateAnimal = async (req: Request, res: Response, next: NextFuncti
         gender,
         description,
         status,
+        volunteerId: status === "a_placer" ? null : undefined,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
       },
     });
