@@ -123,7 +123,7 @@ export const updateOfferStatus = async (req: Request, res: Response, next: NextF
         }),
         prisma.animal.update({
           where: { id: Number(animalId) },
-          data: { status: "adopte", volunteerId: Number(volunteerId) },
+          data: { status: "place", volunteerId: Number(volunteerId) },
         }),
         prisma.offer.updateMany({
           where: { animalId: Number(animalId), volunteerId: { not: Number(volunteerId) }, status: "soumise" },
