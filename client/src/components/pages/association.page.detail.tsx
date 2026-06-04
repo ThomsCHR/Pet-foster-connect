@@ -520,7 +520,7 @@ function AssociationDetailPage({}: Props) {
     if (!estBenevole()) {
       return (
         <div className="demande-locked">
-          🔒 <span>
+           <span>
             <Link to="/auth">Connectez-vous</Link> en tant que bénévole pour faire une demande
           </span>
         </div>

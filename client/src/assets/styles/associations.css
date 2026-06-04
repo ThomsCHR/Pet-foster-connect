@@ -27,9 +27,9 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url("https://images.unsplash.com/photo-1560807707-8cc77767d783?w=1400&h=400&fit=crop");
-  background-size: cover;
-  background-position: center 40%;
+  background-image: url("https://media.istockphoto.com/id/2231638678/fr/photo/femme-m%C3%BBre-avec-son-chien-et-ses-chats-dans-la-cour-arri%C3%A8re.webp?a=1&b=1&s=612x612&w=0&k=20&c=uLJVf6xoMxivnhzYWCsF9WgTTXLeMN1ca2zirmpAQrc=");
+  background-size: 100% auto;
+  background-position: center center;
   filter: brightness(0.5) saturate(1.1);
   z-index: 0;
 }
