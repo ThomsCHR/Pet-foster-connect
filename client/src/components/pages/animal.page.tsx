@@ -143,7 +143,7 @@ function AnimalDetailPage({ isLogged, connectedUser }: Props) {
     if (!isVolunteer) {
       return (
         <div className="demande-locked-full">
-          🔒 <span>
+           <span>
             <Link to="/auth">Connectez-vous</Link> en tant que bénévole pour faire une demande
           </span>
         </div>

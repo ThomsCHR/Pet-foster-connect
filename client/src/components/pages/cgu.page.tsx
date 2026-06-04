@@ -6,7 +6,7 @@ function CguPage() {
     <div className="cgu-page">
       <div className="cgu-inner">
 
-        <Link to="/" className="cgu-retour">← Retour à l'accueil</Link>
+        <Link to="/" className="cgu-retour"> Retour à l'accueil</Link>
 
         <h1 className="cgu-titre">Conditions Générales d'Utilisation</h1>
         <p className="cgu-date">Dernière mise à jour : mai 2026</p>
