@@ -392,6 +392,17 @@
   border-color: #1D9E75;
 }
 
+.animal-form-file-input {
+  align-self: flex-start;
+  width: auto;
+  max-width: 100%;
+  padding: 6px 0;
+  font-size: 13px;
+  color: #555;
+  border: none;
+  background: transparent;
+}
+
 .animal-form-textarea {
   border: 1.5px solid #e5e7eb;
   border-radius: 8px;
