@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { apiFetch } from "../../lib/api";
+import { apiFetch, ApiError } from "../../lib/api";
 import { useAuth } from "../../contexts/AuthContext";
 import type { Volunteer, VolunteerOffer } from "../../types";
 import { REGIONS, OFFER_STATUS_LABELS, OFFER_STATUS_CLASS, ANIMAL_STATUS_LABELS, ANIMAL_STATUS_CLASS, getRegionLabel } from "../../constants";
@@ -150,17 +150,12 @@ function VolunteerPage() {
     setSupprimerErreur("");
     setDeleting(true);
     try {
-      const reponse = await apiFetch("/api/volunteers/" + id, { method: "DELETE" });
-      if (reponse.ok) {
-        await logout();
-        navigate("/");
-      } else {
-        const erreurJson = await reponse.json();
-        setSupprimerErreur(erreurJson.error || "Erreur lors de la suppression du compte.");
-      }
+      await apiFetch("/api/volunteers/" + id, { method: "DELETE" });
+      await logout();
+      navigate("/");
     } catch (err) {
       console.error("Erreur lors de la suppression :", err);
-      setSupprimerErreur("Erreur réseau.");
+      setSupprimerErreur(err instanceof ApiError ? err.message : "Erreur réseau.");
     }
     setDeleting(false);
   }

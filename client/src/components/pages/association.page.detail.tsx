@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { apiFetch, API_BASE } from "../../lib/api";
+import { apiFetch, ApiError, API_BASE } from "../../lib/api";
 import { useAuth } from "../../contexts/AuthContext";
 import type { Animal, Association, AssociationOffer, OfferStatus, Image } from "../../types";
 import { REGIONS, OFFER_STATUS_LABELS, OFFER_STATUS_CLASS, ANIMAL_STATUS_LABELS, getRegionLabel } from "../../constants";
@@ -144,16 +144,11 @@ function AssociationDetailPage({}: Props) {
     setDeletingCompte(true);
     try {
       const assocId = connectedUser?.association?.id;
-      const reponse = await apiFetch(`/api/associations/${assocId}`, { method: "DELETE" });
-      if (reponse.ok) {
-        await logout();
-        navigate("/");
-      } else {
-        const data = await reponse.json();
-        setSupprimerCompteErreur(data.error ?? "Erreur lors de la suppression.");
-      }
-    } catch {
-      setSupprimerCompteErreur("Erreur réseau.");
+      await apiFetch(`/api/associations/${assocId}`, { method: "DELETE" });
+      await logout();
+      navigate("/");
+    } catch (err) {
+      setSupprimerCompteErreur(err instanceof ApiError ? err.message : "Erreur réseau.");
     } finally {
       setDeletingCompte(false);
     }
