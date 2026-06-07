@@ -53,6 +53,7 @@ function VolunteerPage() {
   // Suppression de compte
   const [deleting, setDeleting]           = useState(false);
   const [confirmSupprimer, setConfirmSupprimer] = useState(false);
+  const [supprimerErreur, setSupprimerErreur]   = useState("");
 
   // Demandes d'accueil du bénévole
   const [offers, setOffers]             = useState<VolunteerOffer[]>([]);
@@ -146,15 +147,20 @@ function VolunteerPage() {
   }
 
   async function supprimerCompte() {
+    setSupprimerErreur("");
     setDeleting(true);
     try {
       const reponse = await apiFetch("/api/volunteers/" + id, { method: "DELETE" });
       if (reponse.ok) {
         await logout();
         navigate("/");
+      } else {
+        const erreurJson = await reponse.json();
+        setSupprimerErreur(erreurJson.error || "Erreur lors de la suppression du compte.");
       }
     } catch (err) {
       console.error("Erreur lors de la suppression :", err);
+      setSupprimerErreur("Erreur réseau.");
     }
     setDeleting(false);
   }
@@ -422,7 +428,7 @@ function VolunteerPage() {
               </div>
 
               <div style={{ borderTop: "1px solid #f3f4f6", paddingTop: "20px", marginTop: "8px" }}>
-                <button type="button" className="profil-btn-delete" onClick={() => setConfirmSupprimer(true)} disabled={deleting}>
+                <button type="button" className="profil-btn-delete" onClick={() => { setSupprimerErreur(""); setConfirmSupprimer(true); }} disabled={deleting}>
                   {deleting ? "Suppression..." : "Supprimer mon compte"}
                 </button>
               </div>
@@ -576,6 +582,7 @@ function VolunteerPage() {
       <div className="modal-overlay" onClick={() => setConfirmSupprimer(false)}>
         <div className="modal-confirm" onClick={(e) => e.stopPropagation()}>
           <p>Supprimer définitivement votre compte ? Cette action est irréversible.</p>
+          {supprimerErreur && <p style={{ color: "red", fontSize: "0.85rem" }}>{supprimerErreur}</p>}
           <div className="modal-confirm-actions">
             <button className="btn-cancel" onClick={() => setConfirmSupprimer(false)}>Annuler</button>
             <button className="profil-btn-delete" onClick={supprimerCompte} disabled={deleting}>
