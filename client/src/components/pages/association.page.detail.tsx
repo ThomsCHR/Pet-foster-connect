@@ -949,7 +949,7 @@ function AssociationDetailPage({}: Props) {
                 <img
                   src={URL.createObjectURL(formImage)}
                   alt="Aperçu"
-                  style={{ marginTop: 8, maxHeight: 120, borderRadius: 6 }}
+                  style={{ marginTop: 8, width: 80, height: 80, objectFit: "cover", borderRadius: 6 }}
                 />
               )}
               {editAnimalId !== null && formImages.length > 0 && (
