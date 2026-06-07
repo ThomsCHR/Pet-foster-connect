@@ -931,7 +931,7 @@ function AssociationDetailPage({}: Props) {
               {/* Input fichier */}
               <input
                 type="file"
-                className="animal-form-input"
+                className="animal-form-file-input"
                 accept="image/jpeg,image/png,image/webp"
                 multiple={editAnimalId !== null}
                 onChange={(e) => {
